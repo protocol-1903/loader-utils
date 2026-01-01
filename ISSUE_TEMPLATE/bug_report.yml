@@ -1,0 +1,48 @@
+name: Bug Report
+description: File a bug report to help improve my mods.
+labels: ["bug"]
+assignees:
+  - protocol-1903
+body:
+  - type: checkboxes
+    id: issuetype
+    attributes:
+      label: What kind of issue is this?
+      description: You may select more than one.
+      options:
+        - label: Compatibility
+        - label: Locale (names, descriptions, unknown keys)
+        - label: Graphical
+        - label: Crash
+        - label: Other
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: What is the problem?
+      description: Please give a clear and concise description of the problem.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps to reproduce
+      description: Please provide reliable steps to reproduce the problem.
+      placeholder: |
+        1. First step
+        2. Second step
+        3. and so on...
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add screenshots etc. (Anything that will provide more context about the problem)
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Log file
+      description: |
+        Add this file: factorio-current.log. It can be found at %APPDATA%\Factorio\factorio-current.log on most Windows installations, or in the Factorio game folder.
+    validations:
+      required: false
