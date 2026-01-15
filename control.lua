@@ -3,6 +3,14 @@ local base_loaders = assert(mod_data.data.base_loaders, "ERROR: data.base_loader
 local loader_ids = assert(mod_data.data.loader_ids, "ERROR: data.loader_ids for loader-utils not found!")
 local modded_loaders = assert(mod_data.data.modded_loaders, "ERROR: data.modded_loaders for loader-utils not found!")
 
+script.on_configuration_changed(function (event)
+  for _, player in pairs(game.players) do
+    if player.gui.relative["loader-utils-ui"] then
+      player.gui.relative["loader-utils-ui"].destroy()
+    end
+  end
+end)
+
 -- parse modded_loaders to convert ["0"] into [0]
 for i, tabledata in pairs(modded_loaders) do
   for j, name in pairs(tabledata) do
@@ -238,15 +246,6 @@ script.on_event(defines.events.on_gui_opened, function (event)
     gui.sub.lf.state = bit32.band(id, 1) ~= 0
     gui.sub.rl.state = bit32.band(id, 2) ~= 0
     gui.sub.fs.state = bit32.band(id, 4) ~= 0
-  end
-end)
-
-script.on_configuration_changed(function (event)
-  if not event.mod_changes["loader-utils"] then return end
-  for _, player in pairs(game.players) do
-    if player.gui.relative["loader-utils-ui"] then
-      player.gui.relative["loader-utils-ui"].destroy()
-    end
   end
 end)
 
