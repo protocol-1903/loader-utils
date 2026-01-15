@@ -28,6 +28,9 @@ local function replace(old_entity, player_index, new_id)
   local player = game.get_player(player_index)
   local opened = player and player.opened == old_entity
 
+  -- return if entity, id, or base type not found
+  if not old_entity or not new_id or not base_loaders[old_entity.name == "entity-ghost" and old_entity.ghost_name or old_entity.name] then return end
+
   local surface = old_entity.surface
   local parameters = {
     name = old_entity.name == "entity-ghost" and "entity-ghost" or modded_loaders[base_loaders[old_entity.name]][new_id] or base_loaders[old_entity.name],
@@ -206,6 +209,7 @@ script.on_event(defines.events.on_gui_opened, function (event)
   if type == "loader" or type == "loader-1x1" then
     local player = game.get_player(event.player_index)
     local id = entity.tags and entity.tags["loader-utils"] or loader_ids[name]
+    if not id then return end
     local gui = player.gui.relative["loader-utils-ui"]
 
     if not gui then

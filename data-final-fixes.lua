@@ -1,5 +1,12 @@
 local base_loaders, loader_ids, modded_loaders = {}, {}, {}
 
+local blacklist = {
+  ["ee-infinity-loader"] = true
+}
+
+---@param old data.LoaderPrototype
+---@param id uint8
+---@return data.LoaderPrototype
 local function make_copy(old, id)
   local new = table.deepcopy(old)
   new.name = id .. "-" .. old.name
@@ -37,19 +44,22 @@ for _, prototypes in pairs {
   data.raw.loader,
   data.raw["loader-1x1"]
 } do for _, loader in pairs(prototypes) do
-  base_loaders[loader.name] = loader.name
-  modded_loaders[loader.name] = {[0] = loader.name}
-  loader_ids[loader.name] = 0
-  loader.per_lane_filters = false
-  loader.wait_for_full_stack = false
-  loader.respect_insert_limits = false
-  loader.placeable_by = loader.placeable_by or data.raw.item[loader.name] and {item = loader.name, count = 1} or nil
-  if max_stack_size then
-    loader.max_belt_stack_size = (loader.max_belt_stack_size or 0) > 1 and loader.max_belt_stack_size or max_stack_size
-    loader.adjustable_belt_stack_size = true
+  if not blacklist[loader.name] and not loader.ignore_by_loader_utils then
+    base_loaders[loader.name] = loader.name
+    modded_loaders[loader.name] = {[0] = loader.name}
+    loader_ids[loader.name] = 0
+    loader.per_lane_filters = false
+    loader.wait_for_full_stack = false
+    loader.respect_insert_limits = false
+    loader.placeable_by = loader.placeable_by or data.raw.item[loader.name] and {item = loader.name, count = 1} or nil
+    if max_stack_size then
+      loader.max_belt_stack_size = (loader.max_belt_stack_size or 0) > 1 and loader.max_belt_stack_size or max_stack_size
+      loader.adjustable_belt_stack_size = true
+    end
+  elseif loader.ignore_by_loader_utils then
+    blacklist[loader.name] = true
   end
 end end
-
 
 -- find a way to avoid the race condition
 for _, prototypes in pairs {
@@ -60,22 +70,24 @@ for _, prototypes in pairs {
   "rl",
   "fs"
 } do for _, old in pairs(table.deepcopy(prototypes)) do
-  local new = make_copy(old, id) ---@cast new data.LoaderPrototype
+  if not blacklist[old.name] then
+    local new = make_copy(old, id)
 
-  if id == "lf" then
-    new.filter_count = 2
-    new.per_lane_filters = true
-  elseif id == "rl" then
-    new.respect_insert_limits = true
-  elseif id == "fs" then
-    new.wait_for_full_stack = true
+    if id == "lf" then
+      new.filter_count = 2
+      new.per_lane_filters = true
+    elseif id == "rl" then
+      new.respect_insert_limits = true
+    elseif id == "fs" then
+      new.wait_for_full_stack = true
+    end
+
+    -- save the ID and lookup
+    loader_ids[new.name] = loader_ids[old.name] + 2^bit
+    base_loaders[new.name] = base_loaders[old.name]
+    modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
+    modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
   end
-
-  -- save the ID and lookup
-  loader_ids[new.name] = loader_ids[old.name] + 2^bit
-  base_loaders[new.name] = base_loaders[old.name]
-  modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
-  modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
 end end end
 
 data:extend{{
