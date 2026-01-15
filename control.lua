@@ -172,22 +172,30 @@ script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   end
 end)
 
--- only register event if the event filter exists, i.e. another mod hasn't overridden it (such as loaders make full stacks)
-script.on_event(defines.events.on_built_entity, function (event)
+--- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive|EventData.on_cancelled_deconstruction
+local function on_built(event)
   -- if player has setting enabled, then replace with custom
   local player = game.get_player(event.player_index)
-  local id = event.tags and event.tags["loader-utils"] or
+  local id = event.tags and event.tags["loader-utils"] or player and (
     (player.mod_settings["lu-lf-default"].value and 1 or 0) +
     (player.mod_settings["lu-rl-default"].value and 2 or 0) +
-    (player.mod_settings["lu-fs-default"].value and 4 or 0)
-  if id ~= 0 and event.entity.name ~= "entity-ghost" then
+    (player.mod_settings["lu-fs-default"].value and 4 or 0)) or nil
+  if id and id ~= 0 and event.entity.name ~= "entity-ghost" then
     replace(event.entity, event.player_index, id)
-  elseif event.entity.name == "entity-ghost" then
+  elseif id and event.entity.name == "entity-ghost" then
     local tags = event.entity.tags or {}
-    tags["loader-utils"] = id
+    tags["loader-utils"] = tags["loader-utils"] or id
     event.entity.tags = tags
   end
-end, {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}})
+end
+
+local event_filter = {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}}
+
+script.on_event(defines.events.on_built_entity, on_built, event_filter)
+script.on_event(defines.events.on_robot_built_entity, on_built, event_filter)
+script.on_event(defines.events.on_space_platform_built_entity, on_built, event_filter)
+script.on_event(defines.events.script_raised_built, on_built, event_filter)
+script.on_event(defines.events.script_raised_revive, on_built, event_filter)
 
 script.on_event(defines.events.on_gui_opened, function (event)
   local entity = event.entity
@@ -261,7 +269,7 @@ script.on_event(defines.events.on_player_setup_blueprint, function (event)
   for _, entity in pairs(entities) do
     if base_loaders[entity.name] then
       local tags = entity.tags or {}
-      tags["loader-utils"] = loader_ids[entity.name]
+      tags["loader-utils"] = tags["loader-utils"] or loader_ids[entity.name]
       entity.tags = tags
       entity.name = base_loaders[entity.name] or entity.name
     end
