@@ -1,20 +1,20 @@
 data:extend{
   {
     type = "bool-setting",
-    name = "loader-utils-lane-filtering",
     setting_type = "runtime-per-user",
+    name = "lu-lf-default",
     default_value = true
   },
   {
     type = "bool-setting",
-    name = "loader-utils-full-stacks",
     setting_type = "runtime-per-user",
+    name = "lu-rl-default",
     default_value = false
   },
   {
     type = "bool-setting",
-    name = "loader-utils-respect-limits",
     setting_type = "runtime-per-user",
+    name = "lu-fs-default",
     default_value = false
-  },
+  }
 }

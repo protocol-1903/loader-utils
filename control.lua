@@ -1,15 +1,29 @@
-assert(prototypes.mod_data["lane-filtered-loaders"], "ERROR: mod-data for lane-filtered-loaders not found!")
-local alt_loaders = assert(prototypes.mod_data["lane-filtered-loaders"].data.alt_loaders, "ERROR: data.alt_loaders for lane-filtered-loaders not found!")
-local lane_filtered_loaders = assert(prototypes.mod_data["lane-filtered-loaders"].data.lane_filtered_loaders, "ERROR: data.lane_filtered_loaders for lane-filtered-loaders not found!")
+local mod_data = assert(prototypes.mod_data["loader-utils"], "ERROR: mod-data for loader-utils not found!")
+local base_loaders = assert(mod_data.data.base_loaders, "ERROR: data.base_loaders for loader-utils not found!")
+local loader_ids = assert(mod_data.data.loader_ids, "ERROR: data.loader_ids for loader-utils not found!")
+local modded_loaders = assert(mod_data.data.modded_loaders, "ERROR: data.modded_loaders for loader-utils not found!")
 
-local function replace(old_entity, player)
+-- parse modded_loaders to convert ["0"] into [0]
+for i, tabledata in pairs(modded_loaders) do
+  for j, name in pairs(tabledata) do
+    modded_loaders[i][j + 0] = name
+    modded_loaders[i][j] = nil
+  end
+end
+
+---@param old_entity LuaEntity
+---@param player_index uint32
+---@param new_id uint32
+---@return LuaEntity
+local function replace(old_entity, player_index, new_id)
   -- swap open the new loader gui if the old loader gui is opened
-  local swap_gui = player and player.opened == old_entity
+  local player = game.get_player(player_index)
+  local opened = player and player.opened == old_entity
 
   local surface = old_entity.surface
   local parameters = {
-    name = old_entity.type == "entity-ghost" and "entity-ghost" or alt_loaders[old_entity.type == "entity-ghost" and old_entity.ghost_name or old_entity.name],
-    ghost_name = alt_loaders[old_entity.type == "entity-ghost" and old_entity.ghost_name or old_entity.name],
+    name = old_entity.name == "entity-ghost" and "entity-ghost" or modded_loaders[base_loaders[old_entity.name]][new_id] or base_loaders[old_entity.name],
+    ghost_name = old_entity.name == "entity-ghost" and modded_loaders[base_loaders[old_entity.ghost_name]][new_id] or base_loaders[old_entity.name] or nil,
     position = old_entity.position,
     direction = old_entity.direction,
     quality = old_entity.quality,
@@ -17,16 +31,16 @@ local function replace(old_entity, player)
     force = old_entity.force,
     create_build_effect_smoke = false,
     spawn_decorations = false,
-    raise_built = true,
-    fast_replace = true
+    raise_built = true
   }
-  local control_data = {
-    set_filters = old_entity.get_or_create_control_behavior().circuit_set_filters,
-    read_transfers = old_entity.get_or_create_control_behavior().circuit_read_transfers,
-    enable = old_entity.get_or_create_control_behavior().circuit_enable_disable,
-    circuit_condition = old_entity.get_or_create_control_behavior().circuit_condition,
-    connect_to_logistic_network = old_entity.get_or_create_control_behavior().connect_to_logistic_network,
-    logistic_condition = old_entity.get_or_create_control_behavior().logistic_condition,
+  local control_behavior = old_entity.get_control_behavior()
+  local control_data = control_behavior and {
+    set_filters = control_behavior.circuit_set_filters,
+    read_transfers = control_behavior.circuit_read_transfers,
+    enable = control_behavior.circuit_enable_disable,
+    circuit_condition = control_behavior.circuit_condition,
+    connect_to_logistic_network = control_behavior.connect_to_logistic_network,
+    logistic_condition = control_behavior.logistic_condition,
   }
   local stack = old_entity.prototype.loader_adjustable_belt_stack_size and old_entity.loader_belt_stack_size_override or nil
   local mode = old_entity.loader_filter_mode
@@ -40,29 +54,26 @@ local function replace(old_entity, player)
     filters[#filters+1] = old_entity.get_filter(i)
   end
 
-  for _, connection in pairs(old_entity.get_wire_connector(defines.wire_connector_id.circuit_red, true).connections) do
+  for _, connection in pairs((old_entity.get_wire_connector(defines.wire_connector_id.circuit_red) or {}).connections or {}) do
     red_connections[#red_connections+1] = connection.target
   end
 
-  for _, connection in pairs(old_entity.get_wire_connector(defines.wire_connector_id.circuit_green, true).connections) do
+  for _, connection in pairs((old_entity.get_wire_connector(defines.wire_connector_id.circuit_green) or {}).connections or {}) do
     green_connections[#green_connections+1] = connection.target
   end
 
-  -- find AAI pipe item (if it exists)
-  if old_entity.name:sub(1, 4) == "aai-" and settings.startup["aai-loaders-mode"].value == "lubricated" then
-    local old_pipe = surface.find_entities_filtered{name = old_entity.name .. "-pipe", position = old_entity.position}[1]
-
-    -- store fluid data
-    if old_pipe then
-      fluid = old_pipe.get_fluid(1)
-    end
+  -- find AAI pipe entity (if it exists)
+  if old_entity.name:sub(1, 4) == "aai-" and settings.startup["aai-loaders-mode"].value == "lubricated" and prototypes.entity[old_entity.name .. "-pipe"] then
+    local old_pipe = surface.find_entities_filtered{name = old_entity.name .. "-pipe", position = old_entity.position, limit = 1}[1]
+    fluid = old_pipe and old_pipe.get_fluid(1)
   end
 
   -- delete old loader
   old_entity.destroy{raise_destroy = true}
 
   -- create new loader
-  new_entity = surface.create_entity(parameters)
+  ---@type LuaEntity
+  local new_entity = surface.create_entity(parameters)
 
   -- copy circuit connections
   if #red_connections ~= 0 then
@@ -110,103 +121,130 @@ local function replace(old_entity, player)
     end
   end
 
-  if swap_gui then
+  if opened then
     player.opened = new_entity
   end
 
   return new_entity
 end
 
-remote.add_interface("lane-filtered-loaders",
-  {
-    ["build-check"] = function (entity, player)
-      if player.mod_settings["loaders-lane-filtered-by-default"].value then
-        replace(entity, player)
-      end
-    end
-  }
-)
-
 -- copy paste settings, but change the mode if they are different
 script.on_event(defines.events.on_entity_settings_pasted, function (event)
 
-  local source = event.source.type == "entity-ghost" and event.source.ghost_prototype or event.source.prototype
-  local destination = event.destination.type == "entity-ghost" and event.destination.ghost_prototype or event.destination.prototype
+  local source_id = loader_ids[event.source.name == "entity-ghost" and event.source.ghost_name or event.source.name]
+  local destination_id = loader_ids[event.destination.name == "entity-ghost" and event.destination.ghost_name or event.destination.name]
+
+  if not source_id or not destination_id then return end
 
   -- make sure both are valid entities
-  if lane_filtered_loaders[source.name] == nil or lane_filtered_loaders[destination.name] == nil then return end
-
-  if lane_filtered_loaders[source.name] ~= lane_filtered_loaders[destination.name] then
+  if source_id ~= destination_id then
     -- two different styles, need to swap the destination to match the source
-    replace(event.destination, game.players[event.player_index])
+    replace(event.destination, event.player_index, source_id)
   end
 
-  game.players[event.player_index].play_sound{path = "utility/entity_settings_pasted"}
+  game.get_player(event.player_index).play_sound{path = "utility/entity_settings_pasted"}
 end)
+
+local bitmask = {
+  lf = 0,
+  rl = 1,
+  fs = 2
+}
 
 -- update gui events
 script.on_event(defines.events.on_gui_checked_state_changed, function (event)
-  if event.element.get_mod() == "lane-filtered-loaders" and event.element.name == "checkbox-lane" then
-    replace(game.players[event.player_index].opened, game.players[event.player_index])
-  end
+  if event.element.get_mod() ~= "loader-utils" then return end
+  local entity = game.get_player(event.player_index).opened
+  local name = entity.name == "entity-ghost" and entity.ghost_name or entity.name
+  replace(entity, event.player_index, loader_ids[entity.name] + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name])
 end)
 
 -- only register event if the event filter exists, i.e. another mod hasn't overridden it (such as loaders make full stacks)
-if prototypes.mod_data["lane-filtered-loaders"].data.build_event_filter then
-  assert(#prototypes.mod_data["lane-filtered-loaders"].data.build_event_filter ~= 0, "ERROR: data.build_event_filter for lane-filtered-loaders not found!")
-  script.on_event(defines.events.on_built_entity, function (event)
-    -- if player has setting enabled, then replace with custom
-    if game.players[event.player_index].mod_settings["loaders-lane-filtered-by-default"].value then
-      replace(event.entity, game.players[event.player_index])
-    end
-  end, prototypes.mod_data["lane-filtered-loaders"].data.build_event_filter)
-end
+script.on_event(defines.events.on_built_entity, function (event)
+  -- if player has setting enabled, then replace with custom
+  local player = game.get_player(event.player_index)
+  local id = event.tags and event.tags["loader-utils"] or
+    (player.mod_settings["lu-lf-default"].value and 1 or 0) +
+    (player.mod_settings["lu-rl-default"].value and 2 or 0) +
+    (player.mod_settings["lu-fs-default"].value and 4 or 0)
+  if id ~= 0 and event.entity.name ~= "entity-ghost" then
+    replace(event.entity, event.player_index, id)
+  elseif event.entity.name == "entity-ghost" then
+    local tags = event.entity.tags or {}
+    tags["loader-utils"] = id
+    event.entity.tags = tags
+  end
+end, {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}})
+
+local stacking = script.feature_flags.space_travel
 
 -- when loader gui opened add custom gui
 script.on_event(defines.events.on_gui_opened, function (event)
-  local entity = event.entity and (event.entity.type == "entity-ghost" and event.entity.ghost_type or event.entity.type)
+  local entity = event.entity
+  local type = entity and (entity.type == "entity-ghost" and entity.ghost_type or entity.type)
+  local name = entity and (entity.name == "entity-ghost" and entity.ghost_name or entity.name)
 
   -- if loader opened, handle it
-  if entity == "loader" or entity == "loader-1x1" then
-    local player = game.players[event.player_index]
+  if type == "loader" or type == "loader-1x1" then
+    local player = game.get_player(event.player_index)
 
-    -- if gui exists then delete it
-    if player.gui.relative["lfl-frame"] then
-      player.gui.relative["lfl-frame"].destroy()
+    local gui = player.gui.relative["loader-utils-ui"]
+    
+    if not gui then
+
+      -- create gui
+      gui = player.gui.relative.add{
+        type = "frame",
+        name = "loader-utils-ui",
+        caption = { "loader-utils-ui.frame" },
+        direction = "horizontal",
+        anchor = {
+          gui = defines.relative_gui_type.loader_gui,
+          position = defines.relative_gui_position.right
+        }
+      }
+      gui.add{
+        type = "frame",
+        name = "sub",
+        style = "inside_shallow_frame_with_padding",
+        direction = "vertical",
+      }
+
+      gui.sub.add{
+        type = "checkbox",
+        name = "lf",
+        style = "caption_checkbox",
+        caption = { "loader-utils-ui.checkbox-lf" },
+        state = false
+      }
+      gui.sub.add{
+        type = "checkbox",
+        name = "rl",
+        style = "caption_checkbox",
+        caption = { "loader-utils-ui.checkbox-rl" },
+        state = false
+      }
+      gui.sub.add{
+        type = "checkbox",
+        name = "fs",
+        style = "caption_checkbox",
+        caption = { "loader-utils-ui.checkbox-fs" },
+        state = false
+      }.visible = not stacking
     end
 
-    -- create gui
-    player.gui.relative.add{
-      type = "frame",
-      name = "lfl-frame",
-      caption = { "lfl-window.frame" },
-      direction = "horizontal",
-      anchor = {
-        gui = defines.relative_gui_type.loader_gui,
-        position = defines.relative_gui_position.right
-      }
-    }.add{
-      type = "frame",
-      name = "inner-frame",
-      style = "inside_shallow_frame_with_padding",
-      direction = "vertical",
-    }.add{
-      type = "checkbox",
-      name = "checkbox-lane",
-      style = "caption_checkbox",
-      caption = { "lfl-window.checkbox-lane" },
-      state = lane_filtered_loaders[event.entity and (event.entity.type == "entity-ghost" and event.entity.ghost_name or event.entity.name)]
-    }
+    -- update GUI
+    gui.sub.lf.state = bit32.band(loader_ids[name], 1) ~= 0
+    gui.sub.rl.state = bit32.band(loader_ids[name], 2) ~= 0
+    gui.sub.fs.state = bit32.band(loader_ids[name], 4) ~= 0
   end
 end)
 
--- when loader gui closed delete the custom gui, if it exists
-script.on_event(defines.events.on_gui_closed, function (event)
-  -- if loader opened, handle it
-  if event.entity and event.entity.type == "loader" or event.entity and event.entity.type == "loader-1x1" then
-    local player = game.players[event.player_index]
-    if player.gui.relative["lfl-frame"] then
-      player.gui.relative["lfl-frame"].destroy()
+script.on_configuration_changed(function (event)
+  if not event.mod_changes["loader-utils"] then return end
+  for _, player in pairs(game.players) do
+    if player.gui.relative["loader-utils-ui"] then
+      player.gui.relative["loader-utils-ui"].destroy()
     end
   end
 end)
