@@ -23,8 +23,13 @@ Exceptions:
 
 # History
 Original idea requested by Sunrosa on Discord. Expanded via 2.0.14 with LoaderPrototype::per_lane_filters, 2.0.35 with LoaderPrototype::adjustable_belt_stack_size, 2.0.56 with LoaderPrototype::wait_for_full_stack, and 2.0.65 with LoaderPrototype::respect_insert_limits.
+
 [Stacking Loaders](https://mods.factorio.com/mod/stacking-loaders)
+
 [Lane Filtered Loaders](https://mods.factorio.com/mod/lane-filtered-loaders)
+
 [Loaders make full stacks](https://mods.factorio.com/mod/loaders-make-full-stacks)
+
+
 
 If you have a mod idea, let me know and I can look into it.
