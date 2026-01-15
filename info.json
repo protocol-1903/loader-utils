@@ -4,10 +4,10 @@
   "title": "Loader Utilities",
   "author": "protocol_1903",
   "homepage": "https://discord.gg/K3fXMGVc4z",
-  "description": "",
+  "description": "Adds options to change how loaders function, as well as enabling stacking on loaders if possible.",
   "factorio_version": "2.0",
   "dependencies": [
-    "base >= 2.0.58",
+    "base >= 2.0.65",
     "? stack-inserters",
     "? 0-aai-simple",
     "(?) more-quality-scaling",
