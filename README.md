@@ -14,7 +14,7 @@ These changes are done to all loaders in the game (with some exceptions noted be
 
 Known compatibility:
 - [AAI Loaders](https://mods.factorio.com/mod/aai-loaders)
-- [Krastorio 2](https://mods.factorio.com/mod/Krastorio2) loaders
+- [Krastorio 2](https://mods.factorio.com/mod/Krastorio2)
 - [Deadlock's Stacking Beltboxes & Compact Loaders](https://mods.factorio.com/mod/deadlock-beltboxes-loaders)
 - [Infinite Belt Stacking](https://mods.factorio.com/mod/infinite-belt-stacking)
 
