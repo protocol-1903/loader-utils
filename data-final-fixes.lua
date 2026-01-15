@@ -37,6 +37,10 @@ if feature_flags.space_travel then
   max_stack_size = data.raw["utility-constants"]["default"].max_belt_stack_size or 0
   max_stack_size = max_stack_size > 1 and max_stack_size or 4
   data.raw["utility-constants"]["default"].max_belt_stack_size = max_stack_size
+
+  if not data.raw.technology["transport-belt-capacity-1"] then
+    error("Technology transport-belt-capacity-1 not found! Please install a mod that adds this technology, such as:\n\nhttps://mods.factorio.com/mod/stack-inserters\n")
+  end
 end
 
 -- mark existing loaders as base loaders
