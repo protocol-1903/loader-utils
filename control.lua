@@ -155,8 +155,13 @@ local bitmask = {
 script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   if event.element.get_mod() ~= "loader-utils" then return end
   local entity = game.get_player(event.player_index).opened
-  local name = entity.name == "entity-ghost" and entity.ghost_name or entity.name
-  replace(entity, event.player_index, loader_ids[entity.name] + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name])
+  if entity.name == "entity-ghost" then
+    local tags = entity.tags or {}
+    tags["loader-utils"] = (tags["loader-utils"] or 0) + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name]
+    entity.tags = tags
+  else
+    replace(entity, event.player_index, loader_ids[entity.name] + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name])
+  end
 end)
 
 -- only register event if the event filter exists, i.e. another mod hasn't overridden it (such as loaders make full stacks)
@@ -187,11 +192,10 @@ script.on_event(defines.events.on_gui_opened, function (event)
   -- if loader opened, handle it
   if type == "loader" or type == "loader-1x1" then
     local player = game.get_player(event.player_index)
-
+    local id = entity.tags and entity.tags["loader-utils"] or loader_ids[name]
     local gui = player.gui.relative["loader-utils-ui"]
-    
-    if not gui then
 
+    if not gui then
       -- create gui
       gui = player.gui.relative.add{
         type = "frame",
@@ -234,9 +238,9 @@ script.on_event(defines.events.on_gui_opened, function (event)
     end
 
     -- update GUI
-    gui.sub.lf.state = bit32.band(loader_ids[name], 1) ~= 0
-    gui.sub.rl.state = bit32.band(loader_ids[name], 2) ~= 0
-    gui.sub.fs.state = bit32.band(loader_ids[name], 4) ~= 0
+    gui.sub.lf.state = bit32.band(id, 1) ~= 0
+    gui.sub.rl.state = bit32.band(id, 2) ~= 0
+    gui.sub.fs.state = bit32.band(id, 4) ~= 0
   end
 end)
 
