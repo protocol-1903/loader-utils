@@ -181,9 +181,6 @@ script.on_event(defines.events.on_built_entity, function (event)
   end
 end, {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}})
 
-local stacking = script.feature_flags.space_travel
-
--- when loader gui opened add custom gui
 script.on_event(defines.events.on_gui_opened, function (event)
   local entity = event.entity
   local type = entity and (entity.type == "entity-ghost" and entity.ghost_type or entity.type)
@@ -234,7 +231,7 @@ script.on_event(defines.events.on_gui_opened, function (event)
         style = "caption_checkbox",
         caption = { "loader-utils-ui.checkbox-fs" },
         state = false
-      }.visible = not stacking
+      }.visible = script.feature_flags.space_travel
     end
 
     -- update GUI
