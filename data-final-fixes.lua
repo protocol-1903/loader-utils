@@ -21,23 +21,6 @@ local function make_copy(old, id)
   new.hidden_in_factoriopedia = true
   new.hidden = true
   data.raw[new.type][new.name] = new
-
-  --[[
-    {
-      name = old.name == "aai-loader" and "lane" or "lane-" .. old.name:sub(5, -8),
-      transport_belt = "transport-belt",
-      speed = old.speed,
-      color = {1, 1, 1},
-      fast_replaceable_group = old.fast_replaceable_group,
-      fluid = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old.name .. "-pipe"].fluid_box.filter or nil,
-      fluid_per_minute = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old.name .. "-pipe"].fluid_box.volume - 100 or nil,
-      recipe = {energy_required = 1},
-      unlubricated_recipe = {energy_required = 1},
-      collision_mask = old.collision_mask,
-      upgrade = old.next_upgrade and "aai-lane-" .. old.next_upgrade:sub(5) or nil,
-      localise = true
-    }
-  ]]
   return new
 end
 

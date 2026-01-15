@@ -248,3 +248,23 @@ script.on_configuration_changed(function (event)
     end
   end
 end)
+
+script.on_event(defines.events.on_player_setup_blueprint, function (event)
+	local player = game.get_player(event.player_index)
+	local blueprint = player.blueprint_to_setup
+  -- if normally invalid
+	if not blueprint or not blueprint.valid_for_read then blueprint = player.cursor_stack end
+  -- if non existant, cancel
+  local entities = blueprint and blueprint.get_blueprint_entities()
+  if not entities then return end
+  -- update entities
+  for _, entity in pairs(entities) do
+    if base_loaders[entity.name] then
+      local tags = entity.tags or {}
+      tags["loader-utils"] = loader_ids[entity.name]
+      entity.tags = tags
+      entity.name = base_loaders[entity.name] or entity.name
+    end
+  end
+  blueprint.set_blueprint_entities(entities)
+end)
