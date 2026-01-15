@@ -175,7 +175,7 @@ end)
 --- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive|EventData.on_cancelled_deconstruction
 local function on_built(event)
   -- if player has setting enabled, then replace with custom
-  local player = game.get_player(event.player_index)
+  local player = event.player_index and game.get_player(event.player_index)
   local id = event.tags and event.tags["loader-utils"] or player and (
     (player.mod_settings["lu-lf-default"].value and 1 or 0) +
     (player.mod_settings["lu-rl-default"].value and 2 or 0) +
