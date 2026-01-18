@@ -37,7 +37,7 @@ if feature_flags.space_travel then
   max_stack_size = data.raw["utility-constants"]["default"].max_belt_stack_size or 0
   max_stack_size = max_stack_size > 1 and max_stack_size or 4
   data.raw["utility-constants"]["default"].max_belt_stack_size = max_stack_size
-
+  
   if not data.raw.technology["transport-belt-capacity-1"] then
     error("Technology transport-belt-capacity-1 not found! Please install a mod that adds this technology, such as:\n\nhttps://mods.factorio.com/mod/stack-inserters\n")
   end
@@ -48,6 +48,7 @@ for _, prototypes in pairs {
   data.raw.loader,
   data.raw["loader-1x1"]
 } do for _, loader in pairs(prototypes) do
+  log(loader.name)
   if not blacklist[loader.name] and not loader.ignore_by_loader_utils then
     base_loaders[loader.name] = loader.name
     modded_loaders[loader.name] = {[0] = loader.name}
