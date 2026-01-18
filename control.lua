@@ -25,7 +25,7 @@ end
 ---@return LuaEntity
 local function replace(old_entity, player_index, new_id)
   -- swap open the new loader gui if the old loader gui is opened
-  local player = game.get_player(player_index)
+  local player = player_index and game.get_player(player_index)
   local opened = player and player.opened == old_entity
 
   -- return if entity, id, or base type not found
