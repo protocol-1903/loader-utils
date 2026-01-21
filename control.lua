@@ -42,7 +42,9 @@ local function replace(old_entity, player_index, new_id)
     force = old_entity.force,
     create_build_effect_smoke = false,
     spawn_decorations = false,
-    raise_built = true
+    raise_built = true,
+    fast_replace = true,
+    spill = false
   }
   local control_behavior = old_entity.get_control_behavior()
   local control_data = control_behavior and {
@@ -77,10 +79,8 @@ local function replace(old_entity, player_index, new_id)
   if old_entity.name:sub(1, 4) == "aai-" and settings.startup["aai-loaders-mode"].value == "lubricated" and prototypes.entity[old_entity.name .. "-pipe"] then
     local old_pipe = surface.find_entities_filtered{name = old_entity.name .. "-pipe", position = old_entity.position, limit = 1}[1]
     fluid = old_pipe and old_pipe.get_fluid(1)
+    old_pipe.destroy()
   end
-
-  -- delete old loader
-  old_entity.destroy{raise_destroy = true}
 
   -- create new loader
   ---@type LuaEntity
