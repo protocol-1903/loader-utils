@@ -13,7 +13,6 @@
     "(?) more-quality-scaling",
     "(?) deadlock-beltboxes-loaders",
     "! miniloader-redux",
-    "! loaders-modernized",
     "! aai-loaders-stacking-filtering"
   ]
 }
