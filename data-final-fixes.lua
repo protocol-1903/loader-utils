@@ -62,6 +62,7 @@ for _, prototypes in pairs {
     end
   elseif loader.ignore_by_loader_utils then
     blacklist[loader.name] = true
+    loader.ignore_by_loader_utils = nil
   end
 end end
 
