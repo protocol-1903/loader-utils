@@ -87,6 +87,7 @@ local function replace(old_entity, player_index, new_id)
   -- create new loader
   ---@type LuaEntity
   local new_entity = surface.create_entity(parameters)
+  if not new_entity then return end
 
   -- copy circuit connections
   if #red_connections ~= 0 then

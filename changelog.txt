@@ -3,6 +3,7 @@ Version: 1.0.1
 Date: ????
   Bugfixes:
     - Fixed a crash with AAI Loaders. Resolves https://github.com/protocol-1903/loader-utils/issues/23
+    - Fixed a crash with nonexistant entities after creation. Resolves https://github.com/protocol-1903/loader-utils/issues/18, https://github.com/protocol-1903/loader-utils/issues/19, https://github.com/protocol-1903/loader-utils/issues/20
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2026-01-24
