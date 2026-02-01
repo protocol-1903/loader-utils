@@ -272,14 +272,17 @@ script.on_event(defines.events.on_player_setup_blueprint, function (event)
   -- if non existant, cancel
   local entities = blueprint and blueprint.get_blueprint_entities()
   if not entities then return end
+  local changed = false
   -- update entities
   for _, entity in pairs(entities) do
     if base_loaders[entity.name] then
+      local changed = true
       local tags = entity.tags or {}
       tags["loader-utils"] = tags["loader-utils"] or loader_ids[entity.name]
       entity.tags = tags
       entity.name = base_loaders[entity.name] or entity.name
     end
   end
+  if not changed then return end -- make no changes unless required
   blueprint.set_blueprint_entities(entities)
 end)
