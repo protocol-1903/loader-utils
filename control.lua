@@ -78,8 +78,10 @@ local function replace(old_entity, player_index, new_id)
   -- find AAI pipe entity (if it exists)
   if old_entity.name:sub(1, 4) == "aai-" and settings.startup["aai-loaders-mode"].value == "lubricated" and prototypes.entity[old_entity.name .. "-pipe"] then
     local old_pipe = surface.find_entities_filtered{name = old_entity.name .. "-pipe", position = old_entity.position, limit = 1}[1]
-    fluid = old_pipe and old_pipe.get_fluid(1)
-    old_pipe.destroy()
+    if old_pipe then
+      fluid = old_pipe.get_fluid(1)
+      old_pipe.destroy()
+    end
   end
 
   -- create new loader
