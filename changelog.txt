@@ -3,6 +3,7 @@ Version: 1.0.3
 Date: ???
   Bugfixes:
     - Fixed issues with spaghetti belt tools. Resolves https://github.com/protocol-1903/loader-utils/issues/27
+    - Fixed an issue with filter duplication. Resolves https://github.com/protocol-1903/loader-utils/issues/31
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2026-02-12

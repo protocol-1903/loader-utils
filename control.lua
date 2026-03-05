@@ -22,7 +22,6 @@ end
 ---@param old_entity LuaEntity
 ---@param player_index uint32
 ---@param new_id uint32
----@return LuaEntity
 local function replace(old_entity, player_index, new_id)
   -- swap open the new loader gui if the old loader gui is opened
   local player = player_index and game.get_player(player_index)
@@ -109,8 +108,8 @@ local function replace(old_entity, player_index, new_id)
   -- set filter(s) and circuit controls
   if mode then new_entity.loader_filter_mode = mode end
   if #filters <= new_entity.filter_slot_count then
-    for i, filter in pairs(filters) do
-      new_entity.set_filter(i, filter)
+    for i=1, new_entity.filter_slot_count do
+      new_entity.set_filter(i, filters[i])
     end
   end
   if control_data then
@@ -138,8 +137,6 @@ local function replace(old_entity, player_index, new_id)
   if opened then
     player.opened = new_entity
   end
-
-  return new_entity
 end
 
 -- copy paste settings, but change the mode if they are different
