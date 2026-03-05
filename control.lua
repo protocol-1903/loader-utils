@@ -243,7 +243,7 @@ local function on_built(event)
     entity.tags = tags
   end
   -- just checking to make sure someone else didnt screw something up
-  if player and entity and entity.valid then
+  if player and entity and entity.valid and player.mod_settings["lu-enable-snapping"].value then
     -- attempt snapping
     local surface = entity.surface
     local force = entity.force

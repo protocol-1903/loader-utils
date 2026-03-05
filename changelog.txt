@@ -3,6 +3,7 @@ Version: 1.0.3
 Date: ???
   Features:
     - Added custom loader snapping handling. Resolves https://github.com/protocol-1903/loader-utils/issues/22
+    - Added a mod setting to enable loader snapping, default on.
     - Added a mod setting to show all loader entities in selection UIs. Allows for generic upgrade planner use. Resolves https://github.com/protocol-1903/loader-utils/issues/29
   Changes:
     - Added loader.factoriopedia_alternative pointing to the base loader
