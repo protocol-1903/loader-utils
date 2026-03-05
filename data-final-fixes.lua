@@ -25,8 +25,9 @@ local function make_copy(old, id)
   end
   new.localised_name = old.localised_name or { "entity-name." .. old.name }
   new.localised_description = old.localised_description or { "entity-description." .. old.name }
+  new.hidden = not settings.startup["lu-show-all-loaders"].value
+  new.factoriopedia_alternative = old.factoriopedia_alternative or old.name
   new.hidden_in_factoriopedia = true
-  new.hidden = true
   data.raw[new.type][new.name] = new
   return new
 end

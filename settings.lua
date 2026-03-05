@@ -16,5 +16,11 @@ data:extend{
     setting_type = "runtime-per-user",
     name = "lu-fs-default",
     default_value = false
+  },
+  {
+    type = "bool-setting",
+    setting_type = "startup",
+    name = "lu-show-all-loaders",
+    default_value = false
   }
 }

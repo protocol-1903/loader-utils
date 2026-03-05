@@ -3,6 +3,8 @@ local base_loaders = assert(mod_data.data.base_loaders, "ERROR: data.base_loader
 local loader_ids = assert(mod_data.data.loader_ids, "ERROR: data.loader_ids for loader-utils not found!")
 local modded_loaders = assert(mod_data.data.modded_loaders, "ERROR: data.modded_loaders for loader-utils not found!")
 
+local event_filter = {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}}
+
 script.on_configuration_changed(function (event)
   for _, player in pairs(game.players) do
     if player.gui.relative["loader-utils-ui"] then
@@ -192,14 +194,25 @@ script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   end
 end)
 
+local just_destroyed = {}
+local masking = {
+  [defines.events.on_player_mined_entity] = defines.events.on_built_entity,
+  [defines.events.on_robot_mined_entity] = defines.events.on_robot_built_entity,
+  [defines.events.on_space_platform_mined_entity] = defines.events.on_space_platform_built_entity,
+  [defines.events.script_raised_destroy] = defines.events.script_raised_built,
+  [defines.events.on_entity_died] = defines.events.script_raised_revive,
+}
+
 --- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive|EventData.on_cancelled_deconstruction
 local function on_built(event)
   -- if player has setting enabled, then replace with custom
   local player = event.player_index and game.get_player(event.player_index)
-  local id = event.tags and event.tags["loader-utils"] or player and (
+  local id = event.tags and event.tags["loader-utils"] or
+    just_destroyed.tick == event.tick and masking[just_destroyed.event] == event.name and just_destroyed.id or player and (
     (player.mod_settings["lu-lf-default"].value and 1 or 0) +
     (player.mod_settings["lu-rl-default"].value and 2 or 0) +
     (player.mod_settings["lu-fs-default"].value and 4 or 0)) or nil
+  just_destroyed = {}
   if id and id ~= 0 and event.entity.name ~= "entity-ghost" then
     replace(event.entity, event.player_index, id)
   elseif id and event.entity.name == "entity-ghost" then
@@ -209,13 +222,25 @@ local function on_built(event)
   end
 end
 
-local event_filter = {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}}
-
 script.on_event(defines.events.on_built_entity, on_built, event_filter)
 script.on_event(defines.events.on_robot_built_entity, on_built, event_filter)
 script.on_event(defines.events.on_space_platform_built_entity, on_built, event_filter)
 script.on_event(defines.events.script_raised_built, on_built, event_filter)
 script.on_event(defines.events.script_raised_revive, on_built, event_filter)
+
+local function on_destroyed(event)
+  just_destroyed = {
+    tick = event.tick,
+    event = event.name,
+    id = loader_ids[event.entity.name == "entity-ghost" and event.entity.ghost_name or event.entity.name]
+  }
+end
+
+script.on_event(defines.events.on_player_mined_entity, on_destroyed, event_filter)
+script.on_event(defines.events.on_robot_mined_entity, on_destroyed, event_filter)
+script.on_event(defines.events.on_space_platform_mined_entity, on_destroyed, event_filter)
+script.on_event(defines.events.script_raised_destroy, on_destroyed, event_filter)
+script.on_event(defines.events.on_entity_died, on_destroyed, event_filter)
 
 script.on_event(defines.events.on_gui_opened, function (event)
   local entity = event.entity
