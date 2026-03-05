@@ -24,6 +24,7 @@ end
 ---@param old_entity LuaEntity
 ---@param player_index uint32
 ---@param new_id uint32
+---@return LuaEntity?
 local function replace(old_entity, player_index, new_id)
   -- swap open the new loader gui if the old loader gui is opened
   local player = player_index and game.get_player(player_index)
@@ -70,7 +71,6 @@ local function replace(old_entity, player_index, new_id)
           action.target.name == old_entity.name and
           action.target.position.x == old_entity.position.x and
           action.target.position.y == old_entity.position.y then
-            log(i)
             parameters.player = player.index
             parameters.undo_index = #stack.get_undo_item(i) > 1 and i or 0
             break
@@ -156,6 +156,8 @@ local function replace(old_entity, player_index, new_id)
   if opened then
     player.opened = new_entity
   end
+
+  return new_entity
 end
 
 -- copy paste settings, but change the mode if they are different
@@ -202,23 +204,86 @@ local masking = {
   [defines.events.script_raised_destroy] = defines.events.script_raised_built,
   [defines.events.on_entity_died] = defines.events.script_raised_revive,
 }
+snap_targets = {
+  "container",
+  "logistic-container",
+  "linked-container",
+  "infinity-container",
+  "assembling-machine",
+  "furnace",
+  "rocket-silo",
+  "mining-drill",
+  "lab",
+  "boiler",
+  "reactor",
+  "fusion-reactor",
+  "ammo-turret",
+  "artillery-turret",
+  "straight-rail",
+  "agricultural-tower",
+  "asteroid-collector",
+}
 
 --- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive|EventData.on_cancelled_deconstruction
 local function on_built(event)
   -- if player has setting enabled, then replace with custom
   local player = event.player_index and game.get_player(event.player_index)
+  local entity = event.entity
   local id = event.tags and event.tags["loader-utils"] or
     just_destroyed.tick == event.tick and masking[just_destroyed.event] == event.name and just_destroyed.id or player and (
     (player.mod_settings["lu-lf-default"].value and 1 or 0) +
     (player.mod_settings["lu-rl-default"].value and 2 or 0) +
     (player.mod_settings["lu-fs-default"].value and 4 or 0)) or nil
   just_destroyed = {}
-  if id and id ~= 0 and event.entity.name ~= "entity-ghost" then
-    replace(event.entity, event.player_index, id)
-  elseif id and event.entity.name == "entity-ghost" then
-    local tags = event.entity.tags or {}
+  if id and id ~= 0 and entity.name ~= "entity-ghost" then
+    entity = replace(entity, event.player_index, id)
+  elseif id and entity.name == "entity-ghost" then
+    local tags = entity.tags or {}
     tags["loader-utils"] = tags["loader-utils"] or id
-    event.entity.tags = tags
+    entity.tags = tags
+  end
+  -- just checking to make sure someone else didnt screw something up
+  if player and entity and entity.valid then
+    -- attempt snapping
+    local surface = entity.surface
+    local force = entity.force
+    local loader_position = entity.position
+    local direction = entity.direction
+    local type = entity.loader_type
+    local output = entity.loader_type == "output"
+    local x, y = loader_position.x, loader_position.y
+    local dir = {
+      [0] = {x = 0, y = 1},
+      {x = -1, y = 0},
+      {x = 0, y = -1},
+      {x = 1, y = 0}
+    }
+    local belt = {x = x + dir[entity.direction/4].x, y = y + dir[entity.direction/4].y}
+    local target = {x = x - dir[entity.direction/4].x, y = y - dir[entity.direction/4].y}
+    local alt = {
+      input = "output",
+      output = "input"
+    }
+
+    if entity.belt_neighbours[type .. "s"][1] then return end
+    local connected = entity.type ~= "entity-ghost" and not not entity.loader_container
+    entity.loader_type = alt[type]
+    if entity.belt_neighbours[alt[type] .. "s"][1] then return end
+    entity.direction = direction
+    entity.update_connections()
+    if entity.belt_neighbours[alt[type] .. "s"][1] then return end
+    entity.loader_type = type
+    if entity.belt_neighbours[type .. "s"][1] then return end
+
+    if connected or
+    surface.count_entities_filtered{ghost_type=snap_targets, position=output and belt or target, force=force, limit=1} > 0 or
+    surface.count_entities_filtered{type="straight-rail", position=output and belt or target, force=force, limit=1} > 0 or
+    (not connected and
+    surface.count_entities_filtered{ghost_type=snap_targets, position=output and target or belt, force=force, limit=1} == 0 and
+    surface.count_entities_filtered{type="straight-rail", position=output and target or belt, force=force, limit=1} == 0) then
+        entity.loader_type = type
+        entity.direction = direction
+    end
   end
 end
 
