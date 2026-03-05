@@ -41,9 +41,7 @@ local function replace(old_entity, player_index, new_id)
     force = old_entity.force,
     create_build_effect_smoke = false,
     spawn_decorations = false,
-    raise_built = true,
-    fast_replace = true,
-    spill = false
+    raise_built = true
   }
   local control_behavior = old_entity.get_control_behavior()
   local control_data = control_behavior and {
@@ -54,12 +52,31 @@ local function replace(old_entity, player_index, new_id)
     connect_to_logistic_network = control_behavior.connect_to_logistic_network,
     logistic_condition = control_behavior.logistic_condition,
   }
-  local stack = old_entity.prototype.loader_adjustable_belt_stack_size and old_entity.loader_belt_stack_size_override or nil
+  local stacking = old_entity.prototype.loader_adjustable_belt_stack_size and old_entity.loader_belt_stack_size_override or nil
   local mode = old_entity.loader_filter_mode
   local red_connections = {}
   local green_connections = {}
   local fluid
   local filters = {}
+
+  local stack = player and player.undo_redo_stack
+  if stack then
+    for i = 1, stack.get_undo_item_count() do
+      for _, action in pairs(stack.get_undo_item(i)) do
+        if action.type == "built-entity" and
+          action.surface_index == old_entity.surface_index and
+          action.target.name == old_entity.name and
+          action.target.position.x == old_entity.position.x and
+          action.target.position.y == old_entity.position.y then
+            log(i)
+            parameters.player = player.index
+            parameters.undo_index = #stack.get_undo_item(i) > 1 and i or 0
+            break
+        end
+      end
+      if parameters.undo_index then break end
+    end
+  end
 
   -- save filters
   for i=1, old_entity.filter_slot_count do
@@ -83,8 +100,8 @@ local function replace(old_entity, player_index, new_id)
     end
   end
 
-  -- create new loader
-  ---@type LuaEntity
+  old_entity.destroy()
+
   local new_entity = surface.create_entity(parameters)
   if not new_entity then return end
 
@@ -101,8 +118,8 @@ local function replace(old_entity, player_index, new_id)
   end
 
   -- update stack size if appliccable
-  if stack and new_entity.prototype.loader_adjustable_belt_stack_size then
-    new_entity.loader_belt_stack_size_override = stack
+  if stacking and new_entity.prototype.loader_adjustable_belt_stack_size then
+    new_entity.loader_belt_stack_size_override = stacking
   end
 
   -- set filter(s) and circuit controls
