@@ -67,13 +67,13 @@ local function replace(old_entity, player_index, new_id)
     for i = 1, stack.get_undo_item_count() do
       for _, action in pairs(stack.get_undo_item(i)) do
         if action.type == "built-entity" and
-          action.surface_index == old_entity.surface_index and
-          action.target.name == old_entity.name and
-          action.target.position.x == old_entity.position.x and
-          action.target.position.y == old_entity.position.y then
-            parameters.player = player.index
-            parameters.undo_index = #stack.get_undo_item(i) > 1 and i or 0
-            break
+            action.surface_index == old_entity.surface_index and
+            action.target.name == old_entity.name and
+            action.target.position.x == old_entity.position.x and
+            action.target.position.y == old_entity.position.y then
+          parameters.player = player.index
+          parameters.undo_index = #stack.get_undo_item(i) > 1 and i or 0
+          break
         end
       end
       if parameters.undo_index then break end
@@ -204,7 +204,7 @@ local masking = {
   [defines.events.script_raised_destroy] = defines.events.script_raised_built,
   [defines.events.on_entity_died] = defines.events.script_raised_revive,
 }
-snap_targets = {
+local snap_targets = {
   "container",
   "logistic-container",
   "linked-container",
@@ -276,13 +276,13 @@ local function on_built(event)
     if entity.belt_neighbours[type .. "s"][1] then return end
 
     if connected or
-    surface.count_entities_filtered{ghost_type=snap_targets, position=output and belt or target, force=force, limit=1} > 0 or
-    surface.count_entities_filtered{type="straight-rail", position=output and belt or target, force=force, limit=1} > 0 or
-    (not connected and
-    surface.count_entities_filtered{ghost_type=snap_targets, position=output and target or belt, force=force, limit=1} == 0 and
-    surface.count_entities_filtered{type="straight-rail", position=output and target or belt, force=force, limit=1} == 0) then
-        entity.loader_type = type
-        entity.direction = direction
+        surface.count_entities_filtered{ghost_type=snap_targets, position=output and belt or target, force=force, limit=1} > 0 or
+        surface.count_entities_filtered{type="straight-rail", position=output and belt or target, force=force, limit=1} > 0 or
+        (not connected and
+        surface.count_entities_filtered{ghost_type=snap_targets, position=output and target or belt, force=force, limit=1} == 0 and
+        surface.count_entities_filtered{type="straight-rail", position=output and target or belt, force=force, limit=1} == 0) then
+      entity.loader_type = type
+      entity.direction = direction
     end
   end
 end
