@@ -40,7 +40,7 @@ local function replace(old_entity, player_index, new_id)
     position = old_entity.position,
     direction = old_entity.direction,
     quality = old_entity.quality,
-    loader_type = old_entity.loader_type,
+    type = old_entity.loader_type,
     force = old_entity.force,
     create_build_effect_smoke = false,
     spawn_decorations = false,

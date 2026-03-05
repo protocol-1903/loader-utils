@@ -8,6 +8,7 @@ Date: ???
     - Added loader.factoriopedia_alternative pointing to the base loader
   Bugfixes:
     - Fixed that fast-replacing a loader would not preserve settings.
+    - Fixed issue with loader settings modifications not respecting loader direction.
     - Fixed issues with spaghetti belt tools. Resolves https://github.com/protocol-1903/loader-utils/issues/27
     - Fixed an issue with filter duplication. Resolves https://github.com/protocol-1903/loader-utils/issues/31
     - Fixed undo/redo issues. Resolves https://github.com/protocol-1903/loader-utils/issues/17
