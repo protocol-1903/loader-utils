@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.3
-Date: ???
+Date: 2026-03-05
   Features:
     - Added custom loader snapping handling. Resolves https://github.com/protocol-1903/loader-utils/issues/22
     - Added a mod setting to enable loader snapping, default on.
