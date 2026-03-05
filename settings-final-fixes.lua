@@ -4,8 +4,8 @@ if mods["aai-loaders"] then
   data.raw["string-setting"]["aai-loaders-belt-stacking-mode"].hidden = true
   data.raw["string-setting"]["aai-loaders-belt-stacking-mode"].forced_value = "off"
   data.raw["string-setting"]["aai-loaders-belt-stacking-mode"].allowed_values = {"off"}
-  data.raw["bool-setting"]["aai-loaders-enable-snapping"].hidden = true
-  data.raw["bool-setting"]["aai-loaders-enable-snapping"].forced_value = false
+  -- data.raw["bool-setting"]["aai-loaders-enable-snapping"].hidden = true
+  -- data.raw["bool-setting"]["aai-loaders-enable-snapping"].forced_value = false
 end
 
 if mods["deadlock-beltboxes-loaders"] then
