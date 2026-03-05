@@ -96,14 +96,14 @@ for _, prototypes in pairs {
 end end end
 
 -- set next_upgrade properly
--- for _, prototypes in pairs {
---   data.raw.loader,
---   data.raw["loader-1x1"]
--- } do for _, loader in pairs(prototypes) do
---   if not blacklist[loader.name] and loader.next_upgrade then
---     loader.next_upgrade = modded_loaders[prototypes[base_loaders[loader.name]].next_upgrade][loader_ids[loader.name]]
---   end
--- end end
+for _, prototypes in pairs {
+  data.raw.loader,
+  data.raw["loader-1x1"]
+} do for _, loader in pairs(prototypes) do
+  if not blacklist[loader.name] and loader.next_upgrade then
+    loader.next_upgrade = modded_loaders[prototypes[base_loaders[loader.name]].next_upgrade][loader_ids[loader.name]]
+  end
+end end
 
 data:extend{{
   type = "mod-data",
