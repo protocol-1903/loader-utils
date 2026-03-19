@@ -30,5 +30,5 @@ Original idea requested by Sunrosa on Discord. Expanded via 2.0.14 with LoaderPr
 
 [Loaders make full stacks](https://mods.factorio.com/mod/loaders-make-full-stacks)
 
-My mods are made 100% by humans, with no AI code or graphics.
+My mods are made 100% by humans, with no computer generated code or graphics.
 If you have a mod idea, let me know and I can look into it.
