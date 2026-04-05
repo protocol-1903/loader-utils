@@ -1,3 +1,5 @@
+require "__perel__.util.scripts.general"
+
 local mod_data = assert(prototypes.mod_data["loader-utils"], "ERROR: mod-data for loader-utils not found!")
 local base_loaders = assert(mod_data.data.base_loaders, "ERROR: data.base_loaders for loader-utils not found!")
 local loader_ids = assert(mod_data.data.loader_ids, "ERROR: data.loader_ids for loader-utils not found!")
@@ -29,9 +31,10 @@ local function replace(old_entity, player_index, new_id)
   -- swap open the new loader gui if the old loader gui is opened
   local player = player_index and game.get_player(player_index)
   local opened = player and player.opened == old_entity
+  local old_name = old_entity.name == "entity-ghost" and old_entity.ghost_name or old_entity.name
 
   -- return if entity, id, or base type not found
-  if not old_entity or not new_id or not base_loaders[old_entity.name == "entity-ghost" and old_entity.ghost_name or old_entity.name] then return end
+  if not old_entity or not new_id or not base_loaders[old_name] then return end
 
   local surface = old_entity.surface
   local parameters = {
@@ -44,7 +47,9 @@ local function replace(old_entity, player_index, new_id)
     force = old_entity.force,
     create_build_effect_smoke = false,
     spawn_decorations = false,
-    raise_built = true
+    raise_built = true,
+    fast_replace = true,
+    spill = false
   }
   local control_behavior = old_entity.get_control_behavior()
   local control_data = control_behavior and {
@@ -64,19 +69,10 @@ local function replace(old_entity, player_index, new_id)
 
   local stack = player and player.undo_redo_stack
   if stack then
-    for i = 1, stack.get_undo_item_count() do
-      for _, action in pairs(stack.get_undo_item(i)) do
-        if action.type == "built-entity" and
-            action.surface_index == old_entity.surface_index and
-            action.target.name == old_entity.name and
-            action.target.position.x == old_entity.position.x and
-            action.target.position.y == old_entity.position.y then
-          parameters.player = player.index
-          parameters.undo_index = #stack.get_undo_item(i) > 1 and i or 0
-          break
-        end
-      end
-      if parameters.undo_index then break end
+    local item = perel.find_build_item(stack, old_entity)
+    if item then
+      parameters.player = player.index
+      parameters.undo_index = item
     end
   end
 
@@ -102,8 +98,6 @@ local function replace(old_entity, player_index, new_id)
     end
   end
 
-  old_entity.destroy()
-
   local new_entity = surface.create_entity(parameters)
   if not new_entity then return end
 
@@ -126,11 +120,13 @@ local function replace(old_entity, player_index, new_id)
 
   -- set filter(s) and circuit controls
   if mode then new_entity.loader_filter_mode = mode end
+
   if #filters <= new_entity.filter_slot_count then
     for i=1, new_entity.filter_slot_count do
       new_entity.set_filter(i, filters[i])
     end
   end
+
   if control_data then
     local new_control = new_entity.get_or_create_control_behavior()
 
@@ -140,6 +136,19 @@ local function replace(old_entity, player_index, new_id)
     new_control.circuit_condition = control_data.circuit_condition
     new_control.connect_to_logistic_network = control_data.connect_to_logistic_network
     new_control.logistic_condition = control_data.logistic_condition
+  end
+
+  -- remove 'remove old entity' action
+  if stack and parameters.undo_index then
+    for a, action in pairs(stack.get_undo_item(parameters.undo_index)) do
+      if action.type == "removed-entity" and
+        action.surface_index == new_entity.surface_index and
+        action.target.name == old_name and
+        action.target.position.x == new_entity.position.x and
+        action.target.position.y == new_entity.position.y then
+        stack.remove_undo_action(parameters.undo_index, a)
+      end
+    end
   end
 
   -- find AAI pipe item (if it exists)
