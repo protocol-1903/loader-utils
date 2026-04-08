@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.2
+Date: 2026-04-08
+  Bugfixes:
+    - Fixed duplication bugs caused by previous update. Resolves https://github.com/protocol-1903/loader-utils/issues/35
+---------------------------------------------------------------------------------------------------
 Version: 1.1.1
 Date: 2026-04-04
   Changes:

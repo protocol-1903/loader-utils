@@ -180,7 +180,17 @@ script.on_event(defines.events.on_entity_settings_pasted, function (event)
   -- make sure both are valid entities
   if source_id ~= destination_id then
     -- two different styles, need to swap the destination to match the source
-    replace(event.destination, event.player_index, source_id)
+    local entity = event.destination
+    local player = game.get_player(event.player_index)
+    local item = {name = entity.prototype.mineable_properties.products[1].name, quality = entity.quality}
+    local amount = player.get_main_inventory() and player.get_main_inventory().get_item_count(item)
+    replace(entity, event.player_index, source_id)
+    if player.controller_type ~= defines.controllers.remote then
+      item.count = amount + 1
+      player.get_main_inventory().remove(item)
+      item.count = amount
+      player.get_main_inventory().insert(item)
+    end
   end
 
   game.get_player(event.player_index).play_sound{path = "utility/entity_settings_pasted"}
@@ -195,13 +205,22 @@ local bitmask = {
 -- update gui events
 script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   if event.element.get_mod() ~= "loader-utils" then return end
-  local entity = game.get_player(event.player_index).opened
+  local player = game.get_player(event.player_index)
+  local entity = player.opened
   if entity.name == "entity-ghost" then
     local tags = entity.tags or {}
     tags["loader-utils"] = (tags["loader-utils"] or 0) + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name]
     entity.tags = tags
   else
+    local item = {name = entity.prototype.mineable_properties.products[1].name, quality = entity.quality}
+    local amount = player.get_main_inventory() and player.get_main_inventory().get_item_count(item)
     replace(entity, event.player_index, loader_ids[entity.name] + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name])
+    if player.controller_type ~= defines.controllers.remote then
+      item.count = amount + 1
+      player.get_main_inventory().remove(item)
+      item.count = amount
+      player.get_main_inventory().insert(item)
+    end
   end
 end)
 
@@ -246,6 +265,17 @@ local function on_built(event)
   just_destroyed = {}
   if id and id ~= 0 and entity.name ~= "entity-ghost" then
     entity = replace(entity, event.player_index, id)
+    if player then
+      if player.cursor_stack and player.cursor_stack.valid_for_read then
+        player.cursor_stack.count = player.cursor_stack.count - 1
+      elseif player.is_cursor_empty() then
+        -- just placed last item, remove from inventory
+        player.get_main_inventory().remove{
+          name = entity.prototype.mineable_properties.products[1].name,
+          quality = entity.quality
+        }
+      end
+    end
   elseif id and entity.name == "entity-ghost" then
     local tags = entity.tags or {}
     tags["loader-utils"] = tags["loader-utils"] or id
