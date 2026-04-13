@@ -188,8 +188,10 @@ script.on_event(defines.events.on_entity_settings_pasted, function (event)
     if player.controller_type ~= defines.controllers.remote then
       item.count = amount + 1
       player.get_main_inventory().remove(item)
-      item.count = amount
-      player.get_main_inventory().insert(item)
+      if amount > 0 then
+        item.count = amount
+        player.get_main_inventory().insert(item)
+      end
     end
   end
 
@@ -218,8 +220,10 @@ script.on_event(defines.events.on_gui_checked_state_changed, function (event)
     if player.controller_type ~= defines.controllers.remote then
       item.count = amount + 1
       player.get_main_inventory().remove(item)
-      item.count = amount
-      player.get_main_inventory().insert(item)
+      if amount > 0 then
+        item.count = amount
+        player.get_main_inventory().insert(item)
+      end
     end
   end
 end)
