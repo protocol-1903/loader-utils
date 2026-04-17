@@ -268,16 +268,17 @@ local function on_built(event)
     (player.mod_settings["lu-fs-default"].value and 4 or 0)) or nil
   just_destroyed = {}
   if id and id ~= 0 and entity.name ~= "entity-ghost" then
+    local item = {
+      name = entity.prototype.mineable_properties.products[1].name,
+      quality = entity.quality
+    }
     entity = replace(entity, event.player_index, id)
     if player then
       if player.cursor_stack and player.cursor_stack.valid_for_read then
         player.cursor_stack.count = player.cursor_stack.count - 1
       elseif player.is_cursor_empty() then
         -- just placed last item, remove from inventory
-        player.get_main_inventory().remove{
-          name = entity.prototype.mineable_properties.products[1].name,
-          quality = entity.quality
-        }
+        player.get_main_inventory().remove(item)
       end
     end
   elseif id and entity.name == "entity-ghost" then

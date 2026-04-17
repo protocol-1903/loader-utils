@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.4
+Date: 2026-04-17
+  Bugfixes:
+    - Fixed crash with loaders modernized when placing the last loader down. Resolves https://github.com/protocol-1903/loader-utils/issues/39
+---------------------------------------------------------------------------------------------------
 Version: 1.1.3
 Date: 2026-04-13
   Bugfixes:
