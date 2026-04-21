@@ -45,4 +45,4 @@ body:
       description: |
         Add this file: factorio-current.log. It can be found at %APPDATA%\Factorio\factorio-current.log on most Windows installations, or in the Factorio game folder.
     validations:
-      required: false
+      required: true
