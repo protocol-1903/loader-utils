@@ -44,5 +44,6 @@ body:
       label: Log file
       description: |
         Add this file: factorio-current.log. It can be found at %APPDATA%\Factorio\factorio-current.log on most Windows installations, or in the Factorio game folder.
+        If your game crashed when loading mods, please also include mod-list.json. It can be found at %APPDATA%\Factorio\mods\mod-list.json, or in the Factorio game folder.
     validations:
       required: true
