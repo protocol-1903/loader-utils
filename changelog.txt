@@ -1,8 +1,11 @@
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.5
-Date: ???
+Date: 2026-05-08
+  Changes:
+    - All loaders are now checked to ensure they have at least 2 filters on the non-lane filtering variant
   Bugfixes:
     - Fixed that loader filters would move when settings were adjusted or loaders were blueprinted. Filters will now be shifted and trunctated when possible
+    - Fixed a crash with Exotic Industries: Loaders (2.0 Port) when blueprinting loaders because the base loader has fewer filter slots than the lane filtering variant. Resolves https://github.com/protocol-1903/loader-utils/issues/40
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Date: 2026-04-17

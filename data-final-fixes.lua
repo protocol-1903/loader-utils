@@ -57,6 +57,7 @@ for _, prototypes in pairs {
     loader.wait_for_full_stack = false
     loader.respect_insert_limits = false
     loader.placeable_by = loader.placeable_by or data.raw.item[loader.name] and {item = loader.name, count = 1} or nil
+    loader.filter_count = loader.filter_count >= 2 and loader.filter_count or 2 -- ensure at least 2 filters for the base loader
     if max_stack_size then
       loader.max_belt_stack_size = (loader.max_belt_stack_size or 0) > 1 and loader.max_belt_stack_size or max_stack_size
       loader.adjustable_belt_stack_size = true
