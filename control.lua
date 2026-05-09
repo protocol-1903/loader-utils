@@ -78,7 +78,7 @@ local function replace(old_entity, player_index, new_id)
 
   -- save filters
   for i=1, old_entity.filter_slot_count do
-    filters[#filters+1] = old_entity.get_filter(i)
+    filters[i] = old_entity.get_filter(i)
   end
 
   for _, connection in pairs((old_entity.get_wire_connector(defines.wire_connector_id.circuit_red) or {}).connections or {}) do
@@ -121,9 +121,18 @@ local function replace(old_entity, player_index, new_id)
   -- set filter(s) and circuit controls
   if mode then new_entity.loader_filter_mode = mode end
 
-  if #filters <= new_entity.filter_slot_count then
-    for i=1, new_entity.filter_slot_count do
-      new_entity.set_filter(i, filters[i])
+  -- apply as many filters as possible
+  for j, filter in pairs(filters) do
+    if j <= new_entity.filter_slot_count then
+      new_entity.set_filter(j, filter)
+    else
+      local i = 1
+      for _, filter in pairs(filters) do
+        new_entity.set_filter(i, filter)
+        if i == new_entity.filter_slot_count then break end
+        i = i + 1
+      end
+      break
     end
   end
 

@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.5
+Date: ???
+  Bugfixes:
+    - Fixed that loader filters would move when settings were adjusted or loaders were blueprinted. Filters will now be shifted and trunctated when possible
+---------------------------------------------------------------------------------------------------
 Version: 1.1.4
 Date: 2026-04-17
   Bugfixes:
