@@ -7,11 +7,17 @@ local modded_loaders = assert(mod_data.data.modded_loaders, "ERROR: data.modded_
 
 local event_filter = {{filter = "type", type = "loader"}, {filter = "type", type = "loader-1x1"}, {filter = "ghost_type", type = "loader"}, {filter = "ghost_type", type = "loader-1x1"}}
 
-script.on_configuration_changed(function (event)
+script.on_configuration_changed(function ()
   for _, player in pairs(game.players) do
     if player.gui.relative["loader-utils-ui"] then
       player.gui.relative["loader-utils-ui"].destroy()
     end
+  end
+end)
+
+script.on_init(function()
+  if mods["loaders-modernized"] then
+    remote.call("loaders-modernized", "disable_snapping")
   end
 end)
 
@@ -179,6 +185,7 @@ local function replace(old_entity, player_index, new_id)
 end
 
 -- copy paste settings, but change the mode if they are different
+---@param event EventData.on_entity_settings_pasted
 script.on_event(defines.events.on_entity_settings_pasted, function (event)
 
   local source_id = loader_ids[event.source.name == "entity-ghost" and event.source.ghost_name or event.source.name]
@@ -214,6 +221,7 @@ local bitmask = {
 }
 
 -- update gui events
+---@param event EventData.on_gui_checked_state_changed
 script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   if event.element.get_mod() ~= "loader-utils" then return end
   local player = game.get_player(event.player_index)
@@ -265,7 +273,7 @@ local snap_targets = {
   "asteroid-collector",
 }
 
---- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive|EventData.on_cancelled_deconstruction
+--- @param event EventData.on_built_entity|EventData.on_robot_built_entity|EventData.on_space_platform_built_entity|EventData.script_raised_built|EventData.script_raised_revive
 local function on_built(event)
   -- if player has setting enabled, then replace with custom
   local player = event.player_index and game.get_player(event.player_index)
@@ -346,6 +354,7 @@ script.on_event(defines.events.on_space_platform_built_entity, on_built, event_f
 script.on_event(defines.events.script_raised_built, on_built, event_filter)
 script.on_event(defines.events.script_raised_revive, on_built, event_filter)
 
+--- @param event EventData.on_player_mined_entity|EventData.on_robot_mined_entity|EventData.on_space_platform_mined_entity|EventData.script_raised_destroy|EventData.on_entity_died
 local function on_destroyed(event)
   just_destroyed = {
     tick = event.tick,
@@ -360,6 +369,7 @@ script.on_event(defines.events.on_space_platform_mined_entity, on_destroyed, eve
 script.on_event(defines.events.script_raised_destroy, on_destroyed, event_filter)
 script.on_event(defines.events.on_entity_died, on_destroyed, event_filter)
 
+---@param event EventData.on_gui_opened
 script.on_event(defines.events.on_gui_opened, function (event)
   local entity = event.entity
   local type = entity and (entity.type == "entity-ghost" and entity.ghost_type or entity.type)
@@ -421,6 +431,7 @@ script.on_event(defines.events.on_gui_opened, function (event)
   end
 end)
 
+---@param event EventData.on_player_setup_blueprint
 script.on_event(defines.events.on_player_setup_blueprint, function (event)
 	local player = game.get_player(event.player_index)
 	local blueprint = player.blueprint_to_setup
