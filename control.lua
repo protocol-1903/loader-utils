@@ -16,13 +16,13 @@ script.on_configuration_changed(function ()
 end)
 
 script.on_init(function()
-  if helpers.compare_versions(script.active_mods["loaders-modernized"], "2.0.5") >= 0 then
+  if helpers.compare_versions(script.active_mods["loaders-modernized"] or "1.1", "2.0.5") >= 0 then
     remote.call("loaders-modernized", "disable_snapping")
   end
 end)
 
 script.on_load(function()
-  if helpers.compare_versions(script.active_mods["loaders-modernized"], "2.0.5") >= 0 then
+  if helpers.compare_versions(script.active_mods["loaders-modernized"] or "1.1", "2.0.5") >= 0 then
     remote.call("loaders-modernized", "disable_snapping")
   end
 end)
