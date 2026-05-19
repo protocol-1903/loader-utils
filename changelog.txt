@@ -2,7 +2,7 @@
 Version: 1.1.8
 Date: 2026-05-18
   Bugfixes:
-    - Fixed the crash not resolved in the previous version. Resolves https://github.com/protocol-1903/loader-utils/42
+    - Fixed the crash not resolved in the previous version. Resolves https://github.com/protocol-1903/loader-utils/issues/42
 ---------------------------------------------------------------------------------------------------
 Version: 1.1.7
 Date: 2026-05-16
