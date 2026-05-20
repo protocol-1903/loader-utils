@@ -10,7 +10,7 @@ Lane filtering is always available, and enabled as the default setting for loade
 Respect machine limits is always available, and disabled as the default setting for loaders. Respect machine limits forces loaders to operate like inserters do, where they only insert a small number of items into crafting machines before stopping instead of inserting up to the item cap.
 
 # Compatibility
-These changes are done to all loaders in the game (with some exceptions noted below). This mod does not add any loaders for the player to use, a mod like [AAI Loaders](https://mods.factorio.com/mod/aai-loaders) must be used to add them. This process is automatic, meaning it should be compatible with mods, but also means it has the chance to break. Let me know if any issues crop up, or if you have any features you wish to be added.
+These changes are done to all loaders in the game (with some exceptions noted below). This mod does not add any loaders for the player to use, a mod like [AAI Loaders](https://mods.factorio.com/mod/aai-loaders) must be used to add them. This process is automatic, meaning it should be compatible with mods, but also means it has the chance to break. Let me know if any issues crop up, or if you have any features you wish to be added. If you wish for loaders to be ignored, add `prototype.ignore_by_loader_utils = true` and no changes will be made.
 
 Known compatibility:
 - [AAI Loaders](https://mods.factorio.com/mod/aai-loaders)
