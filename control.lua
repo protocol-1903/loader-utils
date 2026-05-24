@@ -204,10 +204,10 @@ script.on_event(defines.events.on_entity_settings_pasted, function (event)
     -- two different styles, need to swap the destination to match the source
     local entity = event.destination
     local player = game.get_player(event.player_index)
-    local item = {name = entity.prototype.mineable_properties.products[1].name, quality = entity.quality}
-    local amount = player.get_main_inventory() and player.get_main_inventory().get_item_count(item)
+    local item = entity.type ~= "entity-ghost" and {name = entity.prototype.mineable_properties.products[1].name, quality = entity.quality}
+    local amount = item and player.get_main_inventory() and player.get_main_inventory().get_item_count(item)
     replace(entity, event.player_index, source_id)
-    if player.controller_type ~= defines.controllers.remote then
+    if item and player.controller_type ~= defines.controllers.remote then
       item.count = amount + 1
       player.get_main_inventory().remove(item)
       if amount > 0 then
