@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.9
+Date: ????
+  Compatibility:
+    - Fixed that loaders would not have the proper graphics when Krastorio 2 AAI Loaders Compact is enabled. Resolves https://github.com/protocol-1903/loader-utils/issues/48
+    - Fixed that loaders would not have the proper graphics when Krastorio 2 AAI Loaders Compact (Spaced Out Fork) is enabled. Resolves https://github.com/protocol-1903/loader-utils/issues/48
+---------------------------------------------------------------------------------------------------
 Version: 1.1.8
 Date: 2026-05-18
   Bugfixes:
