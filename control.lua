@@ -179,7 +179,7 @@ local function replace(old_entity, player_index, new_id)
     -- if new_pipe then
     if new_pipe and fluid then
       -- refill fluidbox
-      new_pipe.fluidbox[1] = fluid
+      new_pipe.set_fluid(1, fluid)
     end
   end
 

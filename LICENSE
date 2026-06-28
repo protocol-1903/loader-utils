@@ -1,16 +1,161 @@
-MIT License
+Sunset Protocol License
+(A non-commercial license with time-delayed MIT fallback)
 
 Copyright (c) 2026 protocol_1903
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+The purpose of this License is to encourage open collaboration while
+protecting actively maintained software against commercial exploitation and
+AI training, with a guaranteed transition to the MIT License after a defined
+period of stewardship.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## 1. Grant of License
+
+Subject to the terms and conditions of this License, permission is hereby
+granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to use, copy, modify, merge,
+publish, and distribute the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+## 2. Definitions
+
+## 2.1 Derivative Works
+
+For the purposes of this License, **Derivative Works** means any work that is
+based upon or derived from the Software, in whole or in part, including but
+not limited to modifications, adaptations, translations, abridgments,
+extensions, or any other form in which the Software may be recast, transformed,
+or built upon.
+
+Derivative Works include, without limitation:
+(a) any modification of the source code or compiled form of the Software;
+(b) any work that incorporates the Software, in whole or in substantial part,
+into another program or project; and
+(c) any work that is designed to extend, modify, or make use of the
+Software’s internal structure, logic, or functionality.
+
+For the avoidance of doubt, Derivative Works do not include works that merely
+interact with the Software through its public interfaces without
+incorporating any portion of the Software itself, such as independent
+programs that use the Software as an external tool or service.
+
+## 2.2 Release
+
+For the purposes of this License, a **Release** means a version of the
+Software intentionally made publicly available by the copyright holder under
+this License together with a corresponding publication date.
+
+The **Original Release** is the earliest Release of the Software under this
+License.
+
+The **Most Recent Release** is the latest Release of the Software under this
+License.
+
+For the avoidance of doubt, unpublished revisions, private distributions,
+pre-release builds, development snapshots, continuous integration artifacts,
+or versions made available solely for testing or review do not constitute a
+Release unless expressly designated as such by the copyright holder.
+
+## 3. Artificial Intelligence and Machine Learning Restrictions
+
+Notwithstanding any other provision of this License, no rights are granted to
+use, reproduce, process, analyze, copy, or otherwise exploit the Software or
+any Derivative Works, in whole or in part, for the purpose of developing,
+training, evaluating, benchmarking, adapting, or otherwise improving any
+artificial intelligence or machine learning system, including but not limited
+to foundation models, large language models, neural networks, or substantially
+similar automated learning systems.
+
+Without limitation, the foregoing prohibition includes the use of the
+Software or any Derivative Works as:
+(a) training data or training corpus;
+(b) evaluation, benchmark, or test data;
+(c) fine-tuning, reinforcement learning, supervised learning, unsupervised
+learning, self-supervised learning, or transfer learning input;
+(d) a source for synthetic data generation, model distillation, retrieval
+datasets, embeddings, or vector databases intended to support or improve
+automated learning systems; or
+(e) any dataset, corpus, or collection of works intended, directly or
+indirectly, to develop, evaluate, or improve the capabilities of an
+artificial intelligence or machine learning system.
+
+This restriction applies regardless of whether the Software or any
+Derivative Works are used in their original form, in modified form, in
+compiled form, in extracted or transformed form, or as part of a larger
+collection or dataset.
+
+Any activity prohibited by this Section requires the prior written
+permission of the copyright holder.
+
+## 4. Commercial Use Restrictions
+
+The Software or Derivative Works may not be sold, licensed for a fee, or
+otherwise distributed in whole or in part, in exchange for monetary
+compensation or any other form of consideration.
+
+## 5. Redistribution and Distribution Rights
+
+You may reproduce and distribute copies of the Software or any Derivative
+Works in whole or in part, in any medium, provided that you comply with all
+terms and conditions of this License.
+
+Any such distribution must include a complete copy of this License, must
+retain all copyright and license notices, and must provide appropriate
+attribution to the original author(s).
+
+## 6. Attribution
+
+Attribution must include, at minimum:
+(a) the name of the original author(s),
+(b) a reference to this License,
+(c) a link to the original source or repository of the Software, if one is
+publicly available, and
+(d) presentation in a reasonable manner that does not suggest endorsement
+by the original author(s).
+
+## 7. Licensing of Derivative Works
+
+You may apply additional or different license terms to Derivative Works that
+you create, provided that such terms are consistent with, subordinate to, and
+do not restrict, override, or conflict with the requirements and limitations
+of this License as they apply to the Software or any portions thereof.
+
+## 8. Time-Limited MIT License Fallback
+
+Time-Limited License Fallback (Attribution-Preserving):
+Notwithstanding any other provision of this License, this Software shall,
+after the earliest of:
+(a) a period of 2 years from the date of the Most Recent Release; or
+(b) a period of 10 years from the date of the Original Release;
+be made available under the terms of the MIT License, subject to the
+additional requirements that:
+(a) the name of the original author(s) is retained, and
+(b) a link to the original source or repository of the Software is included,
+where reasonably possible.
+
+Upon the effectiveness of the MIT License under this Section, this
+License shall terminate and the Software shall thereafter be governed
+solely by the MIT License, subject only to the attribution requirements
+set forth in this Section.
+
+## 9. Reserved Rights
+
+Except as expressly granted by this License, all rights in and to the
+Software are reserved by the copyright holder.
+
+No license, permission, or other right shall be implied from the public
+availability of the Software, from any distribution of the Software, or
+from any failure by the copyright holder to enforce any provision of
+this License.
+
+Any use not expressly permitted by this License requires the prior
+written permission of the copyright holder.
+
+## 10. Termination
+
+Any failure to comply with the terms of this License will automatically
+terminate the rights granted herein.
+
+## 11. Disclaimer of Warranty and Limitation of Liability
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
