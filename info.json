@@ -1,6 +1,6 @@
 {
   "name": "loader-utils",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "title": "Loader Utilities",
   "description": "Adds options to change how loaders function, as well as enabling stacking on loaders if possible.",
   "author": "protocol_1903",

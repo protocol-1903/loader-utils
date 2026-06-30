@@ -1,4 +1,10 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.2.1
+Date: 2026-06-30
+  Changes:
+    - Added pips that reflect settings to the entity icons to more easily differentiate them in selection UIs.
+    - Changed mod setting to show all loaders in selection UIs to default to true.
+---------------------------------------------------------------------------------------------------
 Version: 1.2.0
 Date: 2026-06-27
   Features:

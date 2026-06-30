@@ -4,32 +4,32 @@ local blacklist = {
   ["ee-infinity-loader"] = true
 }
 
----@param old data.LoaderPrototype
+---@param old_prototype data.LoaderPrototype
 ---@param id uint8
 ---@return data.LoaderPrototype
-local function make_copy(old, id)
-  local new = table.deepcopy(old)
-  new.name = id .. "-" .. old.name
-  if mods["aai-loaders"] and old.name:find("aai%-") then
+local function make_copy(old_prototype, id)
+  local new_prototype = table.deepcopy(old_prototype)
+  new_prototype.name = id .. "-" .. old_prototype.name
+  if mods["aai-loaders"] and old_prototype.name:find("aai%-") then
     local name = AAILoaders.make_tier {
-      name = id .. (old.name == "aai-loader" and "" or "-" .. old.name:sub(5, -8)),
+      name = id .. (old_prototype.name == "aai-loader" and "" or "-" .. old_prototype.name:sub(5, -8)),
       transport_belt = "transport-belt",
-      fluid = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old.name .. "-pipe"] and data.raw["storage-tank"][old.name .. "-pipe"].fluid_box.filter or nil,
-      fluid_per_minute = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old.name .. "-pipe"] and data.raw["storage-tank"][old.name .. "-pipe"].fluid_box.volume - 100 or nil,
+      fluid = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old_prototype.name .. "-pipe"] and data.raw["storage-tank"][old_prototype.name .. "-pipe"].fluid_box.filter or nil,
+      fluid_per_minute = settings.startup["aai-loaders-mode"].value == "lubricated" and data.raw["storage-tank"][old_prototype.name .. "-pipe"] and data.raw["storage-tank"][old_prototype.name .. "-pipe"].fluid_box.volume - 100 or nil,
       recipe = {},
       unlubricated_recipe = {}
     }.loader.name
     data.raw.item[name] = nil
     data.raw.recipe[name] = nil
-    new.name = name
+    new_prototype.name = name
   end
-  new.localised_name = old.localised_name or { "entity-name." .. old.name }
-  new.localised_description = old.localised_description or { "entity-description." .. old.name }
-  new.hidden = not settings.startup["lu-show-all-loaders"].value
-  new.factoriopedia_alternative = old.factoriopedia_alternative or old.name
-  new.hidden_in_factoriopedia = true
-  data.raw[new.type][new.name] = new
-  return new
+  new_prototype.localised_name = old_prototype.localised_name or { "entity-name." .. old_prototype.name }
+  new_prototype.localised_description = old_prototype.localised_description or { "entity-description." .. old_prototype.name }
+  new_prototype.hidden = not settings.startup["lu-show-all-loaders"].value
+  new_prototype.factoriopedia_alternative = old_prototype.factoriopedia_alternative or old_prototype.name
+  new_prototype.hidden_in_factoriopedia = true
+  data.raw[new_prototype.type][new_prototype.name] = new_prototype
+  return new_prototype
 end
 
 local max_stack_size
@@ -48,23 +48,24 @@ end
 for _, prototypes in pairs {
   data.raw.loader,
   data.raw["loader-1x1"]
-} do for _, loader in pairs(prototypes) do
-  if not blacklist[loader.name] and not loader.ignore_by_loader_utils then
-    base_loaders[loader.name] = loader.name
-    modded_loaders[loader.name] = {[0] = loader.name}
-    loader_ids[loader.name] = 0
-    loader.per_lane_filters = false
-    loader.wait_for_full_stack = false
-    loader.respect_insert_limits = false
-    loader.placeable_by = loader.placeable_by or data.raw.item[loader.name] and {item = loader.name, count = 1} or nil
-    loader.filter_count = loader.filter_count >= 2 and loader.filter_count or 2 -- ensure at least 2 filters for the base loader
+} do for _, prototype in pairs(prototypes) do
+  if not blacklist[prototype.name] and not prototype.ignore_by_loader_utils then
+    base_loaders[prototype.name] = prototype.name
+    modded_loaders[prototype.name] = {[0] = prototype.name}
+    loader_ids[prototype.name] = 0
+    prototype.per_lane_filters = false
+    prototype.wait_for_full_stack = false
+    prototype.respect_insert_limits = false
+    prototype.placeable_by = prototype.placeable_by or data.raw.item[prototype.name] and {item = prototype.name, count = 1} or nil
+    prototype.filter_count = prototype.filter_count >= 2 and prototype.filter_count or 2 -- ensure at least 2 filters for the base loader
+    prototype.order = prototype.order or "loader-[" .. prototype.name .. "]" -- default order parameter
     if max_stack_size then
-      loader.max_belt_stack_size = (loader.max_belt_stack_size or 0) > 1 and loader.max_belt_stack_size or max_stack_size
-      loader.adjustable_belt_stack_size = true
+      prototype.max_belt_stack_size = (prototype.max_belt_stack_size or 0) > 1 and prototype.max_belt_stack_size or max_stack_size
+      prototype.adjustable_belt_stack_size = true
     end
-  elseif loader.ignore_by_loader_utils then
-    blacklist[loader.name] = true
-    loader.ignore_by_loader_utils = nil
+  elseif prototype.ignore_by_loader_utils then
+    blacklist[prototype.name] = true
+    prototype.ignore_by_loader_utils = nil
   end
 end end
 
@@ -76,34 +77,50 @@ for _, prototypes in pairs {
   [0] = "lf",
   "rl",
   "fs"
-} do for _, old in pairs(table.deepcopy(prototypes)) do
-  if not blacklist[old.name] then
-    local new = make_copy(old, id)
+} do for _, old_prototype in pairs(table.deepcopy(prototypes)) do
+  if not blacklist[old_prototype.name] then
+    local new_prototype = make_copy(old_prototype, id)
+    new_prototype.order = prototypes[base_loaders[old_prototype.name]].order .. "[" .. (loader_ids[old_prototype.name] + 2^bit) .. "]"
 
     if id == "lf" then
-      new.filter_count = 2
-      new.per_lane_filters = true
+      new_prototype.filter_count = 2
+      new_prototype.per_lane_filters = true
     elseif id == "rl" then
-      new.respect_insert_limits = true
+      new_prototype.respect_insert_limits = true
     elseif id == "fs" then
-      new.wait_for_full_stack = true
+      new_prototype.wait_for_full_stack = true
     end
 
     -- save the ID and lookup
-    loader_ids[new.name] = loader_ids[old.name] + 2^bit
-    base_loaders[new.name] = base_loaders[old.name]
-    modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
-    modded_loaders[base_loaders[new.name]][loader_ids[new.name]] = new.name
+    loader_ids[new_prototype.name] = loader_ids[old_prototype.name] + 2^bit
+    base_loaders[new_prototype.name] = base_loaders[old_prototype.name]
+    modded_loaders[base_loaders[new_prototype.name]][loader_ids[new_prototype.name]] = new_prototype.name
+    modded_loaders[base_loaders[new_prototype.name]][loader_ids[new_prototype.name]] = new_prototype.name
   end
 end end end
 
--- set next_upgrade properly
 for _, prototypes in pairs {
   data.raw.loader,
   data.raw["loader-1x1"]
-} do for _, loader in pairs(prototypes) do
-  if not blacklist[loader.name] and loader.next_upgrade then
-    loader.next_upgrade = modded_loaders[prototypes[base_loaders[loader.name]].next_upgrade][loader_ids[loader.name]]
+} do for _, prototype in pairs(prototypes) do
+  -- set next_upgrade properly
+  if not blacklist[prototype.name] and prototype.next_upgrade then
+    prototype.next_upgrade = modded_loaders[prototypes[base_loaders[prototype.name]].next_upgrade][loader_ids[prototype.name]]
+  end
+  -- update icons
+  prototype.icons = prototype.icons or {{
+    icon = prototype.icon,
+    icon_size = prototype.icon_size
+  }}
+  prototype.icon = nil
+  prototype.icon_size = nil
+  for i = 1, 3 do
+    prototype.icons[#prototype.icons+1] = {
+      icon = ("__loader-utils__/graphics/pips/pip-%s.png"):format(bit32.band(2^(i-1), loader_ids[prototype.name]) ~= 0 and "green" or "red"),
+      icon_size = 32,
+      scale = 0.3,
+      shift = {-14, i * 6}
+    }
   end
 end end
 

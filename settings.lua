@@ -21,7 +21,7 @@ data:extend{
     type = "bool-setting",
     setting_type = "startup",
     name = "lu-show-all-loaders",
-    default_value = false
+    default_value = true
   },
   {
     type = "bool-setting",
