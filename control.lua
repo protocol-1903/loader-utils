@@ -15,18 +15,6 @@ script.on_configuration_changed(function ()
   end
 end)
 
-script.on_init(function()
-  if helpers.compare_versions(script.active_mods["loaders-modernized"] or "1.1", "2.0.5") >= 0 then
-    remote.call("loaders-modernized", "disable_snapping")
-  end
-end)
-
-script.on_load(function()
-  if helpers.compare_versions(script.active_mods["loaders-modernized"] or "1.1", "2.0.5") >= 0 then
-    remote.call("loaders-modernized", "disable_snapping")
-  end
-end)
-
 -- parse modded_loaders to convert ["0"] into [0]
 for i, tabledata in pairs(modded_loaders) do
   for j, name in pairs(tabledata) do
