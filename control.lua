@@ -220,11 +220,11 @@ script.on_event(defines.events.on_gui_checked_state_changed, function (event)
   if event.element.get_mod() ~= "loader-utils" then return end
   local player = game.get_player(event.player_index)
   local entity = player.opened
-  if entity.name == "entity-ghost" then
+  if entity.name == "entity-ghost" and base_loaders[entity.ghost_name] then
     local tags = entity.tags or {}
     tags["loader-utils"] = (tags["loader-utils"] or 0) + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name]
     entity.tags = tags
-  else
+  elseif base_loaders[entity.name] then
     local item = {name = entity.prototype.mineable_properties.products[1].name, quality = entity.quality}
     local amount = player.get_main_inventory() and player.get_main_inventory().get_item_count(item)
     replace(entity, event.player_index, loader_ids[entity.name] + (event.element.state and 1 or -1) * 2 ^ bitmask[event.element.name])
@@ -394,7 +394,6 @@ script.on_event(defines.events.on_gui_opened, function (event)
         style = "inside_shallow_frame_with_padding",
         direction = "vertical",
       }
-
       gui.sub.add{
         type = "checkbox",
         name = "lf",

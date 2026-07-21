@@ -3,6 +3,8 @@ Version: 1.2.2
 Date: ????
   Changes:
     - Removed compatibility code for loaders modernized
+  Bugfixes:
+    - Updated copy/paste functionality to ignore loaders without support
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.1
 Date: 2026-06-30
