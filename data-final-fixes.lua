@@ -104,23 +104,26 @@ for _, prototypes in pairs {
   data.raw["loader-1x1"]
 } do for _, prototype in pairs(prototypes) do
   -- set next_upgrade properly
-  if not blacklist[prototype.name] and prototype.next_upgrade then
-    prototype.next_upgrade = modded_loaders[prototypes[base_loaders[prototype.name]].next_upgrade][loader_ids[prototype.name]]
-  end
-  -- update icons
-  prototype.icons = prototype.icons or {{
-    icon = prototype.icon,
-    icon_size = prototype.icon_size
-  }}
-  prototype.icon = nil
-  prototype.icon_size = nil
-  for i = 1, 3 do
-    prototype.icons[#prototype.icons+1] = {
-      icon = ("__loader-utils__/graphics/pips/pip-%s.png"):format(bit32.band(2^(i-1), loader_ids[prototype.name]) ~= 0 and "green" or "red"),
-      icon_size = 32,
-      scale = 0.3,
-      shift = {-14, i * 6}
-    }
+  if not blacklist[prototype.name] then
+    if prototype.next_upgrade then
+      prototype.next_upgrade = modded_loaders[prototypes[base_loaders[prototype.name]].next_upgrade][loader_ids[prototype.name]]
+    end
+
+    -- update icons
+    prototype.icons = prototype.icons or {{
+      icon = prototype.icon,
+      icon_size = prototype.icon_size
+    }}
+    prototype.icon = nil
+    prototype.icon_size = nil
+    for i = 1, 3 do
+      prototype.icons[#prototype.icons+1] = {
+        icon = ("__loader-utils__/graphics/pips/pip-%s.png"):format(bit32.band(2^(i-1), loader_ids[prototype.name]) ~= 0 and "green" or "red"),
+        icon_size = 32,
+        scale = 0.3,
+        shift = {-14, i * 6}
+      }
+    end
   end
 end end
 
