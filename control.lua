@@ -370,7 +370,7 @@ script.on_event(defines.events.on_gui_opened, function (event)
   local name = entity and (entity.name == "entity-ghost" and entity.ghost_name or entity.name)
 
   -- if loader opened, handle it
-  if type == "loader" or type == "loader-1x1" then
+  if (type == "loader" or type == "loader-1x1") and loader_ids[name] then
     local player = game.get_player(event.player_index)
     local id = entity.tags and entity.tags["loader-utils"] or loader_ids[name]
     if not id then return end

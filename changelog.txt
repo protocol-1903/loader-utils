@@ -5,6 +5,7 @@ Date: ????
     - Removed compatibility code for loaders modernized
   Bugfixes:
     - Updated copy/paste functionality to ignore loaders without support
+    - Fixed that the loader settings window was present regardless of loader support. Resolves https://github.com/protocol-1903/loader-utils/issues/50
     - Fixed a crash when copy/pasting loaders in editor mode's remote view while instant blueprint building is enabled. Resolves https://github.com/protocol-1903/loader-utils/issues/53
     - Fixed that ignored loaders wouldn't be ignored when adding icon pips. Resolves https://github.com/protocol-1903/loader-utils/issues/58
 ---------------------------------------------------------------------------------------------------
