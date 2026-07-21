@@ -1,3 +1,10 @@
+-- ============================================================================
+-- HUMAN-CREATED SOFTWARE
+-- Human-authored. Original work. Not AI-generated.
+-- AI training, fine-tuning, dataset creation, and model evaluation prohibited.
+-- See LICENSE for complete terms.
+-- ============================================================================
+
 require "__perel__.util.scripts.general"
 
 local mod_data = assert(prototypes.mod_data["loader-utils"], "ERROR: mod-data for loader-utils not found!")
