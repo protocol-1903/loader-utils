@@ -3,6 +3,7 @@ Version: 1.2.2
 Date: ????
   Changes:
     - Removed compatibility code for loaders modernized
+    - Disables k2's loader snapping when installed, so both mods don't try to override each other
   Bugfixes:
     - Updated copy/paste functionality to ignore loaders without support
     - Fixed that the loader settings window was present regardless of loader support. Resolves https://github.com/protocol-1903/loader-utils/issues/50

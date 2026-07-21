@@ -15,6 +15,18 @@ script.on_configuration_changed(function ()
   end
 end)
 
+script.on_init(function ()
+  if remote.interfaces.kr_loader_snapping then
+    remote.call("kr_loader_snapping", "set_enabled", false)
+  end
+end)
+
+script.on_load(function ()
+  if remote.interfaces.kr_loader_snapping then
+    remote.call("kr_loader_snapping", "set_enabled", false)
+  end
+end)
+
 -- parse modded_loaders to convert ["0"] into [0]
 for i, tabledata in pairs(modded_loaders) do
   for j, name in pairs(tabledata) do
