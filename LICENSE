@@ -1,11 +1,11 @@
 Sunset Protocol License
-(A non-commercial license with time-delayed MIT fallback)
+(A non-commercial license with time-delayed MIT-adjacent fallback)
 
 Copyright (c) 2026 protocol_1903
 
 The purpose of this License is to encourage open collaboration while
 protecting actively maintained software against commercial exploitation and
-AI training, with a guaranteed transition to the MIT License after a defined
+AI training, with a guaranteed transition to an MIT-adjacent License after a defined
 period of stewardship.
 
 ## 1. Grant of License
@@ -119,23 +119,51 @@ you create, provided that such terms are consistent with, subordinate to, and
 do not restrict, override, or conflict with the requirements and limitations
 of this License as they apply to the Software or any portions thereof.
 
-## 8. Time-Limited MIT License Fallback
+## 8. Time-Limited MIT-Adjacent License Fallback
 
 Time-Limited License Fallback (Attribution-Preserving):
-Notwithstanding any other provision of this License, this Software shall,
-after the earliest of:
+Notwithstanding any other provision of this License, the Software shall
+automatically and irrevocably, upon the earliest of:
 (a) a period of 2 years from the date of the Most Recent Release; or
 (b) a period of 10 years from the date of the Original Release;
-be made available under the terms of the MIT License, subject to the
-additional requirements that:
+cease to be governed by this License and shall thereafter be governed by the
+MIT License set forth in Section 8.1, subject only to the following
+additional attribution requirements:
 (a) the name of the original author(s) is retained, and
 (b) a link to the original source or repository of the Software is included,
 where reasonably possible.
 
-Upon the effectiveness of the MIT License under this Section, this
-License shall terminate and the Software shall thereafter be governed
-solely by the MIT License, subject only to the attribution requirements
-set forth in this Section.
+This transition shall occur automatically and shall require no further
+action, notice, consent, authorization, or publication by the copyright
+holder. Upon this transition, all restrictions imposed by this License shall
+terminate except for the additional attribution requirements expressly
+preserved by this Section.
+
+## 8.1 MIT License
+
+For the purposes of this License, **MIT License** refers to the following:
+
+MIT License
+
+Copyright (c) 2026 protocol_1903
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 ## 9. Reserved Rights
 
