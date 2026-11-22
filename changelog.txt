@@ -3,6 +3,8 @@ Version: 1.2.3
 Date: ????
   Changes:
     - Added human-created software disclaimer to lua file headers
+  Bugfixes:
+    - Fixed infinite loader exploit with cursor enhancements. Resolves https://github.com/protocol-1903/bugreports/issues/34
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.2
 Date: 2026-07-20

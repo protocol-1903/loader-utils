@@ -306,7 +306,7 @@ local function on_built(event)
     if player and player.controller_type ~= defines.controllers.remote then
       if player.cursor_stack and player.cursor_stack.valid_for_read then
         player.cursor_stack.count = player.cursor_stack.count - 1
-      elseif player.is_cursor_empty() then
+      elseif player.is_cursor_empty() or player.cursor_ghost then
         -- just placed last item, remove from inventory
         player.get_main_inventory().remove(item)
       end
