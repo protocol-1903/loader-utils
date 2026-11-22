@@ -7,6 +7,7 @@ Date: ????
     - Fixed a load error with more belt loaders. Resolves https://github.com/protocol-1903/bugreports/issues/32
   Bugfixes:
     - Fixed infinite loader exploit with cursor enhancements. Resolves https://github.com/protocol-1903/bugreports/issues/34
+    - Fixed that items could be deleted when placing loaders indirectly. Resolves https://github.com/protocol-1903/bugreports/issues/31
 ---------------------------------------------------------------------------------------------------
 Version: 1.2.2
 Date: 2026-07-20

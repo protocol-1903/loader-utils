@@ -303,8 +303,8 @@ local function on_built(event)
       quality = entity.quality
     }
     entity = replace(entity, event.player_index, id)
-    if player and player.controller_type ~= defines.controllers.remote then
-      if player.cursor_stack and player.cursor_stack.valid_for_read then
+    if player and player.controller_type ~= defines.controllers.remote and not event.consumed_items.is_empty() then
+      if player.cursor_stack and player.cursor_stack.valid_for_read and player.cursor_stack.name == event.consumed_items[1].name then
         player.cursor_stack.count = player.cursor_stack.count - 1
       elseif player.is_cursor_empty() or player.cursor_ghost then
         -- just placed last item, remove from inventory
