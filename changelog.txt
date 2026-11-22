@@ -3,6 +3,8 @@ Version: 1.2.3
 Date: ????
   Changes:
     - Added human-created software disclaimer to lua file headers
+  Compatibility:
+    - Fixed a load error with more belt loaders. Resolves https://github.com/protocol-1903/bugreports/issues/32
   Bugfixes:
     - Fixed infinite loader exploit with cursor enhancements. Resolves https://github.com/protocol-1903/bugreports/issues/34
 ---------------------------------------------------------------------------------------------------

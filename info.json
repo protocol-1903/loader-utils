@@ -18,6 +18,7 @@
     "! aai-loaders-stacking-filtering",
     "(?) loaders-modernized",
     "(?) krastorio-aai-loaders-compact",
-    "(?) krastorio-so-aai-loaders-compact"
+    "(?) krastorio-so-aai-loaders-compact",
+    "(?) more-belts-loaders"
   ]
 }

@@ -64,6 +64,9 @@ for _, prototypes in pairs {
     prototype.wait_for_full_stack = false
     prototype.respect_insert_limits = false
     prototype.placeable_by = prototype.placeable_by or data.raw.item[prototype.name] and {item = prototype.name, count = 1} or nil
+    if prototype.minable and not prototype.minable.result and not prototype.minable.results then
+      prototype.minable.result = prototype.placeable_by.item
+    end
     prototype.filter_count = prototype.filter_count >= 2 and prototype.filter_count or 2 -- ensure at least 2 filters for the base loader
     prototype.order = prototype.order or "loader-[" .. prototype.name .. "]" -- default order parameter
     if max_stack_size then
